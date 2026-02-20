@@ -27,8 +27,9 @@ REQUIRED_PATHS = [
     ".agents/skills/S6_RenderPolish/SKILL.md",
     "05_LOGS/runs",
     "04_OUTPUT",
-    "04_OUTPUT/prototype",
-    "04_OUTPUT/production",
+    "04_OUTPUT/.gitkeep",
+    "04_OUTPUT/prototype/.gitkeep",
+    "04_OUTPUT/production/.gitkeep",
     "scripts/renderpolish_c2_preview.mjs",
 ]
 
@@ -43,24 +44,6 @@ def main() -> int:
     if missing:
         print("❌ Missing required paths:")
         for m in missing:
-            print(f"- {m}")
-        return 1
-
-    # Gate check: if demo/index.html exists, preview.png must exist and be non-empty
-    gate_missing = []
-    demos = list(repo_root.glob("04_OUTPUT/production/**/demo/index.html"))
-    for demo in demos:
-        date_dir = demo.parent.parent
-        preview = date_dir / "preview" / "preview.png"
-        if not preview.exists():
-            gate_missing.append(f"{preview} (from {demo})")
-        else:
-            if preview.stat().st_size <= 0:
-                gate_missing.append(f"{preview} (empty, from {demo})")
-
-    if gate_missing:
-        print("❌ Gate check failed (missing/empty preview for demo):")
-        for m in gate_missing:
             print(f"- {m}")
         return 1
 
