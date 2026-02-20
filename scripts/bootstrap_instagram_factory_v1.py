@@ -39,9 +39,14 @@ def main() -> int:
         "02_BRIEFS",
         "03_SKILLS_SPEC",
         "04_OUTPUT",
-        f"04_OUTPUT/{datetime.now().strftime('%Y-%m')}/{now}/inbox",
-        f"04_OUTPUT/{datetime.now().strftime('%Y-%m')}/{now}/approved",
-        f"04_OUTPUT/{datetime.now().strftime('%Y-%m')}/{now}/revise",
+        "04_OUTPUT/prototype",
+        "04_OUTPUT/production",
+        f"04_OUTPUT/prototype/{datetime.now().strftime('%Y-%m')}/{now}/inbox",
+        f"04_OUTPUT/prototype/{datetime.now().strftime('%Y-%m')}/{now}/approved",
+        f"04_OUTPUT/prototype/{datetime.now().strftime('%Y-%m')}/{now}/revise",
+        f"04_OUTPUT/production/{datetime.now().strftime('%Y-%m')}/{now}/inbox",
+        f"04_OUTPUT/production/{datetime.now().strftime('%Y-%m')}/{now}/approved",
+        f"04_OUTPUT/production/{datetime.now().strftime('%Y-%m')}/{now}/revise",
         "05_LOGS",
         "05_LOGS/axis-cards",
         "05_LOGS/runs",
@@ -52,6 +57,7 @@ def main() -> int:
         ".agents/skills/S3_UnitProduce",
         ".agents/skills/S4_QA",
         ".agents/skills/S5_ShipAndStore",
+        ".agents/skills/S6_RenderPolish",
         ".agents/skills/_shared",
         "scripts",
     ]
@@ -100,7 +106,9 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - ルール：01_RULES/
 - 入力テンプレ：02_BRIEFS/
 - Skill仕様：.agents/skills/*/SKILL.md
-- 出力：04_OUTPUT/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+- 出力：
+  - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+  - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
 - 実行ログ：05_LOGS/runs/
 """
 
@@ -140,9 +148,9 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 
 ## 2) 制作する（UnitProduce）
 - 入力：02_BRIEFS/Unit-Brief-*.md + 上位3軸
-- 出力：04_OUTPUT/YYYY-MM/YYYY-MM-DD/inbox/
-  - 画像/動画/スクショ
-  - 同名のメタデータ .md（目的/軸/参照URL/意図/Rubric/判定）
+- 出力：
+  - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+  - production用Prompt Pack：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
 
 ## 3) QA（採点）→ 出荷/差し戻し
 - Rubric合計80点以上 → approved
@@ -215,24 +223,31 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 """
 
     files["01_RULES/Rubric.md"] = """
-# Rubric（採点表：10項目×10点）
+# Rubric（採点表：12項目×10点）
 
 ## 出荷条件
 - 合計80点以上：approved
 - 80点未満：revise（差分修正指示）
 - 最大2ループで打ち切り
 
+## Production Gate（必須）
+- production成果物は PNG / JPG / WebP のみ合格
+- SVG単体はスコア上限60（=approved不可）
+- Gate判定結果は 05_LOGS に必ず1行で記録（合格/不合格理由）
+
 ## 採点項目
 1. 3秒で止まる（スクロールストップ）
 2. 何の投稿か即理解（文脈の明確さ）
-3. 主役が強い（構図・フォーカス）
+3. 主役の強さ（縮小耐性）
 4. 余白と密度（整理）
-5. 今っぽい（海外トップ基準）
-6. RePromptらしさ（統一感）
-7. 投稿化できる（9:16・安全領域）
-8. 破綻がない（違和感）
-9. 権利的に安全（固有要素なし）
-10. 格納が正しい（命名・メタデータ）
+5. 質感（光/影/素材）
+6. 今っぽい（海外トップ基準）
+7. RePromptらしさ（統一感）
+8. 投稿化できる（9:16・安全領域）
+9. 破綻がない（違和感）
+10. 権利的に安全（固有要素なし）
+11. 格納が正しい（命名・メタデータ）
+12. 転用耐性（KV/LP/広告への展開）
 
 ## 修正指示の書き方（不足表現）
 - 「主役が欠けている」→ 主役を1つに絞る
@@ -281,7 +296,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## 出力（固定）
 - 画像：9:16（png推奨）
 - メタデータ：同名の .md（目的/軸/参照URL/意図/Rubric/判定）
-- 保存先：04_OUTPUT/YYYY-MM/YYYY-MM-DD/inbox/
+- 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
 
 ## NG
 - ロゴっぽい文字の生成
@@ -304,6 +319,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 動画（短尺） or スクショ3枚
 - 9:16で投稿化できる形に整える
 - メタデータ .md を同梱
+- 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
 """
 
     files["02_BRIEFS/Unit-Brief-ExplainSlide.md"] = """
@@ -406,6 +422,7 @@ S1の軸カードをスコアリングし、今回採用する上位3軸を確�
 
 ## 目的
 上位3軸のうち1つを使い、制作ユニット（3Dティザー / interactiveFV / explain）を作る。
+prototype（SVG素体）と production 用Prompt Pack を分離して出力する。
 
 ## いつ起動するか
 - 上位3軸が確定した後
@@ -421,13 +438,17 @@ S1の軸カードをスコアリングし、今回採用する上位3軸を確�
 - Guardrails / Design DNA
 
 ## 出力（固定）
-- 04_OUTPUT/YYYY-MM/YYYY-MM-DD/inbox/
-  - 画像/動画/スクショ
-  - 同名のメタデータ .md（目的/軸/参照URL/意図/Rubric/判定）
+- prototype（SVG素体）:
+  - 04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+  - 画像（SVG）＋同名メタデータ .md
+- production用Prompt Pack:
+  - 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
+  - *_prompt-pack.md（形状/質感/構図/色/禁止事項）
 
 ## 注意
 - 長文テキストを画像に焼かない
 - 破綻（文字化け/ロゴっぽい文字/不自然な手など）があれば自己差し戻し候補にする
+- productionの本番画像はS6で生成（S3は作らない）
 """
 
     files[".agents/skills/S4_QA/SKILL.md"] = """
@@ -435,10 +456,14 @@ S1の軸カードをスコアリングし、今回採用する上位3軸を確�
 
 ## 目的
 Rubricで採点し、approved / revise を判定し、差分修正指示を出す。
+Production Gate を通過できない成果物は自動で差し戻す。
 
 ## いつ起動するか
 - inboxに新規成果物が入ったとき
 - reviseから再提出が来たとき
+
+## いつ起動しないか
+- まだ出力が prototype の段階で、S6未完のとき
 
 ## 入力
 - 対象成果物（画像/動画）
@@ -446,11 +471,17 @@ Rubricで採点し、approved / revise を判定し、差分修正指示を出�
 - 01_RULES/Rubric.md
 
 ## 出力
-- Rubric 10項目の点数
+- Gate判定結果（合格/不合格理由を1行）を 05_LOGS に必ず記録
+- Rubric 12項目の点数
 - 合計点
 - 判定：approved or revise
 - reviseの場合：差分修正指示（不足表現で書く）
 - ループ回数の更新（最大2）
+
+## Production Gate
+- productionレーンでSVGが来たら自動差し戻し（Gate不合格）
+- production成果物は PNG/JPG/WebP のみ合格
+- SVG単体はスコア上限60（approved不可）
 
 ## 成功条件
 - 判定が一貫している
@@ -480,6 +511,50 @@ Rubricで採点し、approved / revise を判定し、差分修正指示を出�
 - メタデータ欠落
 """
 
+    files[".agents/skills/S6_RenderPolish/SKILL.md"] = """
+# SKILL: S6 RenderPolish
+
+## 目的
+prototype（SVG素体）を production 品質へ昇格させる。
+画像生成で本番PNGを作るか、生成待ち用のPrompt Packを用意する。
+
+## いつ起動するか
+- prototype が approved になり、本番用のproductionが必要なとき
+- QAで「SVGのままではapproved不可」と判定されたとき
+
+## いつ起動しないか
+- まだ prototype が確定していないとき
+- 先に差分修正（S3/S4）が必要なとき
+
+## 入力
+- prototype（SVG素体）
+- 01_RULES/Rubric.md
+- 01_RULES/Design-DNA.md
+
+## 出力（固定）
+- Mode A: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/（PNG/JPG/WebP）
+- Mode B: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/ に Prompt Pack（.md）
+- 05_LOGS/runs に Gate判定結果（合格/不合格理由を1行）
+
+## Mode A（画像生成で本番PNG）
+- 画像生成ツールで production 用の PNG/JPG/WebP を作成
+- 1080×1920、テキストなし、質感・主役・奥行き・コントラストを強化
+- 外部有料APIを使う場合は「費用発生」と「キー管理」を明記し、デフォルトはOFF
+
+## Mode B（Prompt Pack）
+- 生成ツールが使えない場合、Prompt Pack を作成して production待ちとする
+- Prompt Pack には以下を含める
+  - ベース形状
+  - 質感（光/影/素材）
+  - カメラ距離/構図
+  - 色指定
+  - 禁止事項
+- 05_LOGS/runs に「production生成待ち」を明記
+
+## 成功条件
+- production成果物が Gate を通過し、Rubric 80点以上
+"""
+
     # -----------------------
     # Seed output example
     # -----------------------
@@ -505,6 +580,9 @@ Rubricで採点し、approved / revise を判定し、差分修正指示を出�
 - 3DTeaser: 3
 - InteractiveFV: 1
 - ExplainSlide: 1
+
+## F. Gate判定結果
+- (placeholder) 合格/不合格理由を1行で記載
 """
 
     # -----------------------

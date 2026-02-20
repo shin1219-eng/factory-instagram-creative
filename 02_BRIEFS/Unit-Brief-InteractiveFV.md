@@ -12,3 +12,4 @@
 - 動画（短尺） or スクショ3枚
 - 9:16で投稿化できる形に整える
 - メタデータ .md を同梱
+- 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/

@@ -11,9 +11,9 @@
 
 ## 2) 制作する（UnitProduce）
 - 入力：02_BRIEFS/Unit-Brief-*.md + 上位3軸
-- 出力：04_OUTPUT/YYYY-MM/YYYY-MM-DD/inbox/
-  - 画像/動画/スクショ
-  - 同名のメタデータ .md（目的/軸/参照URL/意図/Rubric/判定）
+- 出力：
+  - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+  - production用Prompt Pack：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
 
 ## 3) QA（採点）→ 出荷/差し戻し
 - Rubric合計80点以上 → approved

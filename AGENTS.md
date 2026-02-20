@@ -34,5 +34,7 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - ルール：01_RULES/
 - 入力テンプレ：02_BRIEFS/
 - Skill仕様：.agents/skills/*/SKILL.md
-- 出力：04_OUTPUT/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+- 出力：
+  - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+  - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
 - 実行ログ：05_LOGS/runs/

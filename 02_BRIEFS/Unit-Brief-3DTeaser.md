@@ -12,7 +12,7 @@
 ## 出力（固定）
 - 画像：9:16（png推奨）
 - メタデータ：同名の .md（目的/軸/参照URL/意図/Rubric/判定）
-- 保存先：04_OUTPUT/YYYY-MM/YYYY-MM-DD/inbox/
+- 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
 
 ## NG
 - ロゴっぽい文字の生成

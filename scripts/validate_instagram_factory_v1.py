@@ -24,8 +24,11 @@ REQUIRED_PATHS = [
     ".agents/skills/S3_UnitProduce/SKILL.md",
     ".agents/skills/S4_QA/SKILL.md",
     ".agents/skills/S5_ShipAndStore/SKILL.md",
+    ".agents/skills/S6_RenderPolish/SKILL.md",
     "05_LOGS/runs",
     "04_OUTPUT",
+    "04_OUTPUT/prototype",
+    "04_OUTPUT/production",
 ]
 
 
