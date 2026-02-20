@@ -25,14 +25,16 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - ループ回数の更新（最大2）
 
 ## Production Gate
-- productionレーンで preview.png が存在する場合のみ PASS
-- preview.png が無い場合は BLOCKED（production未生成）
+- productionレーンで preview.png が存在し、サイズ > 0 の場合のみ PASS
+- demo/index.html が無い場合は BLOCKED（production未生成）
+- preview.png が無い／サイズ0の場合は FAILED（render error）
 - production成果物は PNG/JPG/WebP のみ合格
 - SVG単体はスコア上限60（approved不可）
 
 ## Gateログ表記
-- 不合格（品質NG）: 画質/質感/主役/構図の品質が不足
-- BLOCKED（production未生成）: preview.png が無い
+- 不合格（品質NG）: 画質/質感/主役/構図の品質不足
+- BLOCKED（production未生成）: demo/index.html が無い
+- FAILED（render error）: preview.png 生成失敗
 
 ## 成功条件
 - 判定が一貫している
