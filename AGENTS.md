@@ -31,10 +31,12 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - 参照URLは必ず記録（未確認の推測は「未確認」と明示）
 
 ## Repo運用ルール（固定）
-- PR 作成は必須にしない
-- 新規ブランチではなく、デフォルトブランチへ直接 commit & push してよい
+- PR作成は今後一切しない（gh auth / WebViewログイン不要）
+- 変更はデフォルトブランチへ直接 commit & push する
+- 大きい変更の前に backup/YYYY-MM-DD-topic を作る
+- 作業後は scripts/validate_instagram_factory_v1.py を実行し、PASSしたらpush
 - 変更ログは 05_LOGS/ に必ず残す
-- コミットメッセージに必ず要約を書く
+- コミットメッセージに「何を変えたか/なぜ/影響範囲」を必ず1行ずつ書く
 
 ## ファイル配置
 - ルール：01_RULES/
