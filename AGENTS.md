@@ -1,0 +1,38 @@
+# Project Operating Rules (Factory / Instagram)
+
+## 目的
+RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 → 制作 → QA → 格納」まで、**承認だけ**で回せるようにする。
+
+## 最重要（固定するもの / 固定しないもの）
+- 固定する：出力仕様、格納ルール、Rubric（採点）、Guardrails（不変条件）
+- 固定しない：表現軸（毎回 TrendScan で軸カードを生成し、上位3つ採用）
+
+## 実行フロー（必ずこの順番）
+1) TrendScan：参考収集 → 軸カード生成（5〜12） → 上位3採用
+2) UnitProduce：上位3軸 × 制作ユニットで制作
+3) QA：Rubric採点。80点未満は差分修正（最大2ループ）
+4) ShipAndStore：格納ルールに従い保存（inbox/approved/revise）
+
+## 見る場所（固定）と確定条件
+- Awwwards：インタラクティブ/サイト表現の最前線を見る
+- Behance：KV/3D/Caseの完成度が高い事例を見る
+- Dribbble：瞬間火力のあるグラフィック単体を見る
+- Instagram（海外スタジオ/3D作家）：投稿フォーマットに落ちた形を見る
+
+## 出荷条件
+- Rubric合計 80点以上 → approved
+- 80点未満 → revise（差分修正指示を出す）
+- ループは最大2回（沼防止）
+
+## 重要制約
+- テキスト（長文）を画像生成に焼き込むのは原則やらない（破綻しやすい）
+- 文字は後工程で載せる前提（ExplainSlideは例外だが最小限）
+- 既存ブランドの丸パクリは禁止（固有ロゴ/固有コピー/固有KVの踏襲はNG）
+- 参照URLは必ず記録（未確認の推測は「未確認」と明示）
+
+## ファイル配置
+- ルール：01_RULES/
+- 入力テンプレ：02_BRIEFS/
+- Skill仕様：.agents/skills/*/SKILL.md
+- 出力：04_OUTPUT/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+- 実行ログ：05_LOGS/runs/
