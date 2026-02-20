@@ -590,7 +590,7 @@ C2_InteractiveFV_*_prompt-pack.md から demo/index.html を生成し、Playwrig
 - ExplainSlide: 1
 
 ## F. Gate判定結果
-- (placeholder) 合格/不合格理由を1行で記載
+- (placeholder) 合格 / 不合格（品質NG） / BLOCKED（production未生成）
 """
 
     # -----------------------
