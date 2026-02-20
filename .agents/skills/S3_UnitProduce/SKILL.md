@@ -23,9 +23,11 @@ prototype（SVG素体）と production 用Prompt Pack を分離して出力す�
   - 画像（SVG）＋同名メタデータ .md
 - production用Prompt Pack:
   - 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
-  - *_prompt-pack.md（形状/質感/構図/色/禁止事項）
+  - C1: C1_KV_<axis>_image-pack.md（4案、主役/質感/背景/光/構図/禁止事項）
+  - C2/C3: *_prompt-pack.md（形状/質感/構図/色/禁止事項）
 
 ## 注意
 - 長文テキストを画像に焼かない
 - 破綻（文字化け/ロゴっぽい文字/不自然な手など）があれば自己差し戻し候補にする
-- productionの本番画像はS6で生成（C1は demo/preview.png が最終成果物）
+- C1は TrendScan v2 の上位軸のみを使う（品質ゲート未達なら生成しない）
+- productionの本番画像は外部生成（C1は image-pack → 画像）

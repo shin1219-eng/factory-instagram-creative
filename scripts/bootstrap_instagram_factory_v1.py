@@ -122,8 +122,8 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
-  - C1 production：demo/index.html + demo/preview.png を最終成果物として扱う
-  - latest：04_OUTPUT/approved/latest/ に採用物を集約
+  - C1 production：Image Prompt Pack を生成し、画像（png/jpg/webp）が最終成果物
+  - latest：04_OUTPUT/approved/latest/ に採用物を集約（C1画像を優先して1〜2枚）
 - 実行ログ：05_LOGS/runs/
 """
 
@@ -167,7 +167,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
   - production用Prompt Pack：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
-  - C1 production：S6で demo/index.html + demo/preview.png を生成
+  - C1 production：Image Prompt Pack を生成（4案）
 
 ## 3) QA（採点）→ 出荷/差し戻し
 - Rubric合計80点以上 → approved
@@ -177,7 +177,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## 4) ShipAndStore（格納）
 - approved / revise に移動
 - 実行ログを更新
-- 04_OUTPUT/approved/latest/ に採用物を集約
+- 04_OUTPUT/approved/latest/ に採用物を集約（C1画像を優先して1〜2枚）
 """
 
     files["01_RULES/Design-DNA.md"] = """
@@ -251,15 +251,15 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## Production Gate（必須）
 - production成果物は PNG / JPG / WebP のみ合格
 - SVG単体はスコア上限60（=approved不可）
-- productionレーンで demo/preview.png が存在し、サイズ > 0 の場合のみ PASS
-- demo/index.html が無い場合は BLOCKED（production未生成）
-- preview.png が無い／サイズ0の場合は FAILED（render error）
+- C1は画像生成レーン：生成画像（png/jpg/webp）が存在し、**サイズ>=120KB** なら PASS
+- 画像が無い場合は BLOCKED（生成待ち）
+- 生成失敗は FAILED（理由をログ）
 - Gate判定結果は 05_LOGS に必ず1行で記録（合格/不合格理由）
 
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足
-- BLOCKED（production未生成）: demo/index.html が無い
-- FAILED（render error）: preview.png 生成失敗
+- BLOCKED（生成待ち）: 画像が未生成
+- FAILED（render error）: 生成失敗の理由を明記
 
 ## 採点項目
 1. 3秒で止まる（スクロールストップ）
@@ -379,9 +379,13 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 
 ## 出力（固定）
 - prototype：SVG素体（9:16）
-- production：demo/index.html + demo/preview.png（1080×1920）
+- production：Image Prompt Pack（C1_KV_<axis>_image-pack.md）
+  - 1軸につき4案（4プロンプト）
+  - 各案に「主役/質感/背景/光/構図/禁止事項」を明記
 - メタデータ：同名の .md（目的/軸/参照URL/意図/Rubric/判定）
-- 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+- 保存先：
+  - prototype：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+  - production：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
 
 ## NG
 - ロゴっぽい文字の生成
@@ -539,12 +543,14 @@ prototype（SVG素体）と production 用Prompt Pack を分離して出力す�
   - 画像（SVG）＋同名メタデータ .md
 - production用Prompt Pack:
   - 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
-  - *_prompt-pack.md（形状/質感/構図/色/禁止事項）
+  - C1: C1_KV_<axis>_image-pack.md（4案、主役/質感/背景/光/構図/禁止事項）
+  - C2/C3: *_prompt-pack.md（形状/質感/構図/色/禁止事項）
 
 ## 注意
 - 長文テキストを画像に焼かない
 - 破綻（文字化け/ロゴっぽい文字/不自然な手など）があれば自己差し戻し候補にする
-- productionの本番画像はS6で生成（C1は demo/preview.png が最終成果物）
+- C1は TrendScan v2 の上位軸のみを使う（品質ゲート未達なら生成しない）
+- productionの本番画像は外部生成（C1は image-pack → 画像）
 """
 
     files[".agents/skills/S4_QA/SKILL.md"] = """
@@ -575,16 +581,18 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - ループ回数の更新（最大2）
 
 ## Production Gate
-- productionレーンで demo/preview.png が存在し、サイズ > 0 の場合のみ PASS
-- demo/index.html が無い場合は BLOCKED（production未生成）
-- preview.png が無い／サイズ0の場合は FAILED（render error）
+- C1: 生成画像（png/jpg/webp）が存在し、サイズ >=120KB の場合のみ PASS
+- C1: 画像が無い場合は BLOCKED（生成待ち）
+- C1: 画像サイズ不足/形式不正は FAILED（render error）
+- C2: demo/preview.png が存在し、サイズ > 0 の場合のみ PASS
+- C2: preview.png が無い／サイズ0の場合は FAILED（render error）
 - production成果物は PNG/JPG/WebP のみ合格
 - SVG単体はスコア上限60（approved不可）
 
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足
-- BLOCKED（production未生成）: demo/index.html が無い
-- FAILED（render error）: preview.png 生成失敗
+- BLOCKED（生成待ち）: 画像が未生成
+- FAILED（render error）: 生成失敗/サイズ不足/形式不正の理由を明記
 
 ## 成功条件
 - 判定が一貫している
@@ -609,6 +617,7 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - approved：04_OUTPUT/.../approved に移動
 - revise：04_OUTPUT/.../revise に移動
 - latest：04_OUTPUT/approved/latest/ に採用物をコピー（またはリンク）
+  - C1の勝ち画像を優先して1〜2枚集約
 - 05_LOGS/runs の該当runログに結果を追記
 
 ## 失敗条件
@@ -620,29 +629,24 @@ Production Gate を通過できない成果物は自動で差し戻す。
 # SKILL: S6 RenderPolish
 
 ## 目的
-C1/C2 の production プレビューを生成し、production Gate を通す。
-C1は Prompt Pack → demo/index.html → preview.png を生成する。
-C2は demo/index.html → preview.png を生成する。
+C2 の production プレビューを生成し、production Gate を通す。
 
 ## いつ起動するか
-- C1 の production用 Prompt Pack が作成されたとき
 - C2 の demo/index.html が生成されたとき
 - S4 QAで「FAILED（render error）」になったとき
 
 ## いつ起動しないか
-- demo/index.html も Prompt Pack も未生成のとき
+- demo/index.html が未生成のとき
+- C1 のみを扱うとき（C1は Image Prompt Pack → 外部生成）
 
 ## 入力
-- C1: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/C1_3DTeaser_*_prompt-pack.md
 - C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
 
 ## 出力（固定）
-- C1/C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
-- C1/C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/preview.png
+- C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/preview.png
 - 05_LOGS/runs に Gate判定結果（合格/不合格理由を1行）
 
 ## 実行コマンド
-- C1: `node scripts/renderpolish_c1_kv.mjs <prompt-pack>`
 - C2: `node scripts/renderpolish_c2_preview.mjs <demo/index.html>`
 
 ## 注意

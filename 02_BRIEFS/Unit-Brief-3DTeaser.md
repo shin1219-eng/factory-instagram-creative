@@ -11,9 +11,13 @@
 
 ## 出力（固定）
 - prototype：SVG素体（9:16）
-- production：demo/index.html + demo/preview.png（1080×1920）
+- production：Image Prompt Pack（C1_KV_<axis>_image-pack.md）
+  - 1軸につき4案（4プロンプト）
+  - 各案に「主役/質感/背景/光/構図/禁止事項」を明記
 - メタデータ：同名の .md（目的/軸/参照URL/意図/Rubric/判定）
-- 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+- 保存先：
+  - prototype：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+  - production：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
 
 ## NG
 - ロゴっぽい文字の生成
