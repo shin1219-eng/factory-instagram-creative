@@ -1,0 +1,10 @@
+.DS_Store
+
+# Output artifacts (tracked only via .gitkeep)
+04_OUTPUT/**
+!04_OUTPUT/.gitkeep
+!04_OUTPUT/**/.gitkeep
+
+# Run logs (tracked only via .gitkeep)
+05_LOGS/runs/**
+!05_LOGS/runs/.gitkeep
