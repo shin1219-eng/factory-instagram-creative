@@ -25,9 +25,14 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - ループ回数の更新（最大2）
 
 ## Production Gate
-- productionレーンでSVGが来たら自動差し戻し（Gate不合格）
+- productionレーンで preview.png が存在する場合のみ PASS
+- preview.png が無い場合は BLOCKED（production未生成）
 - production成果物は PNG/JPG/WebP のみ合格
 - SVG単体はスコア上限60（approved不可）
+
+## Gateログ表記
+- 不合格（品質NG）: 画質/質感/主役/構図の品質が不足
+- BLOCKED（production未生成）: preview.png が無い
 
 ## 成功条件
 - 判定が一貫している

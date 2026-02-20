@@ -8,7 +8,13 @@
 ## Production Gate（必須）
 - production成果物は PNG / JPG / WebP のみ合格
 - SVG単体はスコア上限60（=approved不可）
+- productionレーンで preview.png が存在する場合のみ PASS
+- preview.png が無い場合は BLOCKED（production未生成）
 - Gate判定結果は 05_LOGS に必ず1行で記録（合格/不合格理由）
+
+## Gateログ表記
+- 不合格（品質NG）: 画質/質感/主役/構図の品質不足
+- BLOCKED（production未生成）: preview.png が無い
 
 ## 採点項目
 1. 3秒で止まる（スクロールストップ）

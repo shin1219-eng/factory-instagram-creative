@@ -1,0 +1,11 @@
+{
+  "name": "factory-instagram-creative",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "playwright": "^1.44.0"
+  },
+  "scripts": {
+    "render:preview": "node scripts/renderpolish_c2_preview.mjs"
+  }
+}

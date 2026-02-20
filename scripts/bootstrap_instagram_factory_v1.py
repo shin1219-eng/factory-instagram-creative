@@ -47,6 +47,8 @@ def main() -> int:
         f"04_OUTPUT/production/{datetime.now().strftime('%Y-%m')}/{now}/inbox",
         f"04_OUTPUT/production/{datetime.now().strftime('%Y-%m')}/{now}/approved",
         f"04_OUTPUT/production/{datetime.now().strftime('%Y-%m')}/{now}/revise",
+        f"04_OUTPUT/production/{datetime.now().strftime('%Y-%m')}/{now}/demo",
+        f"04_OUTPUT/production/{datetime.now().strftime('%Y-%m')}/{now}/preview",
         "05_LOGS",
         "05_LOGS/axis-cards",
         "05_LOGS/runs",
@@ -233,7 +235,13 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## Production Gate（必須）
 - production成果物は PNG / JPG / WebP のみ合格
 - SVG単体はスコア上限60（=approved不可）
+- productionレーンで preview.png が存在する場合のみ PASS
+- preview.png が無い場合は BLOCKED（production未生成）
 - Gate判定結果は 05_LOGS に必ず1行で記録（合格/不合格理由）
+
+## Gateログ表記
+- 不合格（品質NG）: 画質/質感/主役/構図の品質不足
+- BLOCKED（production未生成）: preview.png が無い
 
 ## 採点項目
 1. 3秒で止まる（スクロールストップ）
@@ -479,9 +487,14 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - ループ回数の更新（最大2）
 
 ## Production Gate
-- productionレーンでSVGが来たら自動差し戻し（Gate不合格）
+- productionレーンで preview.png が存在する場合のみ PASS
+- preview.png が無い場合は BLOCKED（production未生成）
 - production成果物は PNG/JPG/WebP のみ合格
 - SVG単体はスコア上限60（approved不可）
+
+## Gateログ表記
+- 不合格（品質NG）: 画質/質感/主役/構図の品質不足
+- BLOCKED（production未生成）: preview.png が無い
 
 ## 成功条件
 - 判定が一貫している
@@ -515,44 +528,39 @@ Production Gate を通過できない成果物は自動で差し戻す。
 # SKILL: S6 RenderPolish
 
 ## 目的
-prototype（SVG素体）を production 品質へ昇格させる。
-画像生成で本番PNGを作るか、生成待ち用のPrompt Packを用意する。
+C2（LP/Interactive/3D）専用の自動プレビューを生成し、production Gate を通す。
+C2_InteractiveFV_*_prompt-pack.md から demo/index.html を生成し、Playwrightで preview.png を出力する。
 
 ## いつ起動するか
-- prototype が approved になり、本番用のproductionが必要なとき
-- QAで「SVGのままではapproved不可」と判定されたとき
+- C2 の production用 Prompt Pack が作成されたとき
+- S4 QAで「BLOCKED（production未生成）」になったとき
 
 ## いつ起動しないか
-- まだ prototype が確定していないとき
-- 先に差分修正（S3/S4）が必要なとき
+- C2 以外のユニット
+- Prompt Pack が未作成のとき
 
 ## 入力
-- prototype（SVG素体）
-- 01_RULES/Rubric.md
-- 01_RULES/Design-DNA.md
+- 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/C2_InteractiveFV_*_prompt-pack.md
 
 ## 出力（固定）
-- Mode A: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/（PNG/JPG/WebP）
-- Mode B: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/ に Prompt Pack（.md）
+- demo: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
+- preview: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/preview/preview.png
 - 05_LOGS/runs に Gate判定結果（合格/不合格理由を1行）
 
-## Mode A（画像生成で本番PNG）
-- 画像生成ツールで production 用の PNG/JPG/WebP を作成
-- 1080×1920、テキストなし、質感・主役・奥行き・コントラストを強化
-- 外部有料APIを使う場合は「費用発生」と「キー管理」を明記し、デフォルトはOFF
+## 手順
+1) Prompt Pack から demo/index.html を生成
+2) Playwright で demo/index.html を headless で開き、preview.png を生成
 
-## Mode B（Prompt Pack）
-- 生成ツールが使えない場合、Prompt Pack を作成して production待ちとする
-- Prompt Pack には以下を含める
-  - ベース形状
-  - 質感（光/影/素材）
-  - カメラ距離/構図
-  - 色指定
-  - 禁止事項
-- 05_LOGS/runs に「production生成待ち」を明記
+## 実行コマンド
+- `npm install`
+- `npm run render:preview <prompt-pack>`
+
+## 注意
+- Playwright が使えない場合は BLOCKED（production未生成）としてログに残す
+- 外部有料APIは使わない（費用発生なし）
 
 ## 成功条件
-- production成果物が Gate を通過し、Rubric 80点以上
+- preview.png が production レーンに生成され、Gate PASS
 """
 
     # -----------------------

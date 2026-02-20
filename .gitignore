@@ -1,4 +1,5 @@
 .DS_Store
+node_modules/
 
 # Output artifacts (tracked only via .gitkeep)
 04_OUTPUT/**
