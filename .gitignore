@@ -3,6 +3,7 @@ node_modules/
 
 # Output artifacts (tracked only via .gitkeep)
 04_OUTPUT/**
+!04_OUTPUT/**/
 !04_OUTPUT/.gitkeep
 !04_OUTPUT/**/.gitkeep
 

@@ -13,11 +13,9 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 3) QA：Rubric採点。80点未満は差分修正（最大2ループ）
 4) ShipAndStore：格納ルールに従い保存（inbox/approved/revise）
 
-## 見る場所（固定）と確定条件
-- Awwwards：インタラクティブ/サイト表現の最前線を見る
-- Behance：KV/3D/Caseの完成度が高い事例を見る
-- Dribbble：瞬間火力のあるグラフィック単体を見る
-- Instagram（海外スタジオ/3D作家）：投稿フォーマットに落ちた形を見る
+## 見る場所（固定）
+- 01_RULES/TrendSources.md の Tier1/2/3 のみを使用
+- 検索結果URL（`?search=` など）は禁止
 
 ## 出荷条件
 - Rubric合計 80点以上 → approved
@@ -46,4 +44,5 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - C1 production：demo/index.html + demo/preview.png を最終成果物として扱う
+  - latest：04_OUTPUT/approved/latest/ に採用物を集約
 - 実行ログ：05_LOGS/runs/

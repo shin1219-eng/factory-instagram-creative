@@ -3,7 +3,8 @@
 ## 1) TrendScan を回す
 - 入力：02_BRIEFS/TrendScan-Brief.md
 - 出力：05_LOGS/runs/YYYY-MM-DD/run_001.md
-  - 参考リンク20件
+  - 参照候補30件 → 品質ゲート
+  - 合格参照10件未満なら FAIL
   - トレンド要約（5行）
   - 表現軸カード（5〜12）
   - 上位3軸（採用）
@@ -24,3 +25,4 @@
 ## 4) ShipAndStore（格納）
 - approved / revise に移動
 - 実行ログを更新
+ - 04_OUTPUT/approved/latest/ に採用物を集約

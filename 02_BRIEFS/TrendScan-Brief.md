@@ -4,20 +4,26 @@
 デザイン界隈の市場調査を行い、表現軸カードを生成して「今回採用する上位3軸」を決める。
 
 ## 見る場所（固定）
-- Awwwards
-- Behance
-- Dribbble
-- Instagram（海外スタジオ/3D作家）
+- 01_RULES/TrendSources.md の Tier1/2/3 のみ
+- 検索結果URL（`?search=` など）は禁止
 
 ## 確定条件
-- 参考URLは20件出す（内訳：Awwwards5 / Behance7 / Dribbble4 / IG4）
-- 表現軸カードは5〜12個出す（1行カード）
+- 参照候補は30件集める
+- Reference Quality Gate を通過した合格参照のみ使用
+- 合格参照が10件未満ならそのRunはFAIL（生成に進まない）
+- 表現軸カードは5〜12個出す（合格参照からのみ）
 - 上位3軸をスコアリングで選ぶ
 
 ## スコアリング軸（各10点）
 - 止まる：IGで目が止まるか
 - 作れる：量産の難易度が現実的か
 - RePrompt適合：Design DNAに合うか
+
+## Reference Quality Gate
+- 参照元は Tier1/2/3 のみ
+- 検索結果URLは禁止
+- 直接の事例ページ／公式の受賞・特集ページのみ
+- 低品質（解像度不足/古い/意図不明）は不合格
 
 ## 出力先（固定）
 05_LOGS/runs/YYYY-MM-DD/run_001.md

@@ -36,9 +36,13 @@ def main() -> int:
     dirs_to_create = [
         "00_README",
         "01_RULES",
+        "01_RULES/style",
         "02_BRIEFS",
+        "02_BRIEFS/production-templates",
         "03_SKILLS_SPEC",
         "04_OUTPUT",
+        "04_OUTPUT/approved",
+        "04_OUTPUT/approved/latest",
         "04_OUTPUT/prototype",
         "04_OUTPUT/production",
         f"04_OUTPUT/prototype/{datetime.now().strftime('%Y-%m')}/{now}/inbox",
@@ -52,6 +56,7 @@ def main() -> int:
         "05_LOGS",
         "05_LOGS/axis-cards",
         "05_LOGS/runs",
+        "05_LOGS/changes",
         ".agents",
         ".agents/skills",
         ".agents/skills/S1_TrendScan",
@@ -87,11 +92,9 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 3) QA：Rubric採点。80点未満は差分修正（最大2ループ）
 4) ShipAndStore：格納ルールに従い保存（inbox/approved/revise）
 
-## 見る場所（固定）と確定条件
-- Awwwards：インタラクティブ/サイト表現の最前線を見る
-- Behance：KV/3D/Caseの完成度が高い事例を見る
-- Dribbble：瞬間火力のあるグラフィック単体を見る
-- Instagram（海外スタジオ/3D作家）：投稿フォーマットに落ちた形を見る
+## 見る場所（固定）
+- 01_RULES/TrendSources.md の Tier1/2/3 のみを使用
+- 検索結果URL（`?search=` など）は禁止
 
 ## 出荷条件
 - Rubric合計 80点以上 → approved
@@ -104,6 +107,14 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - 既存ブランドの丸パクリは禁止（固有ロゴ/固有コピー/固有KVの踏襲はNG）
 - 参照URLは必ず記録（未確認の推測は「未確認」と明示）
 
+## Repo運用ルール（固定）
+- PR作成は今後一切しない（gh auth / WebViewログイン不要）
+- 変更はデフォルトブランチへ直接 commit & push する
+- 大きい変更の前に backup/YYYY-MM-DD-topic を作る
+- 作業後は scripts/validate_instagram_factory_v1.py を実行し、PASSしたらpush
+- 変更ログは 05_LOGS/ に必ず残す
+- コミットメッセージに「何を変えたか/なぜ/影響範囲」を必ず1行ずつ書く
+
 ## ファイル配置
 - ルール：01_RULES/
 - 入力テンプレ：02_BRIEFS/
@@ -112,6 +123,7 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - C1 production：demo/index.html + demo/preview.png を最終成果物として扱う
+  - latest：04_OUTPUT/approved/latest/ に採用物を集約
 - 実行ログ：05_LOGS/runs/
 """
 
@@ -143,7 +155,8 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## 1) TrendScan を回す
 - 入力：02_BRIEFS/TrendScan-Brief.md
 - 出力：05_LOGS/runs/YYYY-MM-DD/run_001.md
-  - 参考リンク20件
+  - 参照候補30件 → 品質ゲート
+  - 合格参照10件未満なら FAIL
   - トレンド要約（5行）
   - 表現軸カード（5〜12）
   - 上位3軸（採用）
@@ -164,6 +177,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## 4) ShipAndStore（格納）
 - approved / revise に移動
 - 実行ログを更新
+- 04_OUTPUT/approved/latest/ に採用物を集約
 """
 
     files["01_RULES/Design-DNA.md"] = """
@@ -274,6 +288,51 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 「質感が欠けている」→ 光・反射・陰影を設計する
 """
 
+    files["01_RULES/TrendSources.md"] = """
+# TrendSources（参照元リスト：固定）
+
+## 共通ルール
+- 参照は **Tier1/2/3 のみ** から取得する
+- **検索結果URL（`?search=` などの検索パラメータ付きURL）は禁止**
+- 直接の事例ページ／公式の受賞・特集ページのみ可
+- 同一ドメイン偏重を避ける（最大4件まで）
+
+## Tier1（最優先・公式/キュレーション）
+1. Awwwards / Websites（SOTD含む）
+   - https://www.awwwards.com/websites/
+2. Awwwards / Collections
+   - https://www.awwwards.com/collections/
+3. The FWA / Awards
+   - https://thefwa.com/awards/
+4. CSS Design Awards / Winners
+   - https://www.cssdesignawards.com/winners/
+5. SiteInspire（キュレーション）
+   - https://www.siteinspire.com/
+
+## Tier2（準公式/準キュレーション）
+1. Behance / Galleries
+   - https://www.behance.net/galleries/
+2. Behance / Featured
+   - https://www.behance.net/featured
+3. Dribbble / Popular
+   - https://dribbble.com/shots/popular
+4. It’s Nice That（キュレーション）
+   - https://www.itsnicethat.com/
+5. Brand New（UnderConsideration）
+   - https://www.underconsideration.com/brandnew/
+
+## Tier3（公式アカウント・参考）
+- https://www.instagram.com/akqa/
+- https://www.instagram.com/obys/
+- https://www.instagram.com/sixnfive/
+- https://www.instagram.com/gmunk/
+- https://www.instagram.com/tendril/
+
+## 禁止例
+- `https://www.behance.net/search/projects?search=3d`（検索URL）
+- `https://dribbble.com/search/3d`（検索URL）
+"""
+
     files["02_BRIEFS/TrendScan-Brief.md"] = """
 # TrendScan Brief（入力テンプレ）
 
@@ -281,20 +340,26 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 デザイン界隈の市場調査を行い、表現軸カードを生成して「今回採用する上位3軸」を決める。
 
 ## 見る場所（固定）
-- Awwwards
-- Behance
-- Dribbble
-- Instagram（海外スタジオ/3D作家）
+- 01_RULES/TrendSources.md の Tier1/2/3 のみ
+- 検索結果URL（`?search=` など）は禁止
 
 ## 確定条件
-- 参考URLは20件出す（内訳：Awwwards5 / Behance7 / Dribbble4 / IG4）
-- 表現軸カードは5〜12個出す（1行カード）
+- 参照候補は30件集める
+- Reference Quality Gate を通過した合格参照のみ使用
+- 合格参照が10件未満ならそのRunはFAIL（生成に進まない）
+- 表現軸カードは5〜12個出す（合格参照からのみ）
 - 上位3軸をスコアリングで選ぶ
 
 ## スコアリング軸（各10点）
 - 止まる：IGで目が止まるか
 - 作れる：量産の難易度が現実的か
 - RePrompt適合：Design DNAに合うか
+
+## Reference Quality Gate
+- 参照元は Tier1/2/3 のみ
+- 検索結果URLは禁止
+- 直接の事例ページ／公式の受賞・特集ページのみ
+- 低品質（解像度不足/古い/意図不明）は不合格
 
 ## 出力先（固定）
 05_LOGS/runs/YYYY-MM-DD/run_001.md
@@ -368,41 +433,52 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 """
 
     files[".agents/skills/S1_TrendScan/SKILL.md"] = """
-# SKILL: S1 TrendScan
+# SKILL: S1 TrendScan (v2)
 
 ## 目的
-市場調査から「表現軸カード」を生成し、今回採用の上位3軸を決めるための材料を作る。
+参照の品質を担保し、「カス参照」を排除した上で表現軸カードを生成する。
 
 ## いつ起動するか
 - 新しい制作日（YYYY-MM-DD）で投稿ネタを作るとき
-- 出力がマンネリ化しているとき
-- 新しい表現を入れたいとき
+- 参照の質が落ちているとき
 
 ## いつ起動しないか
 - 既に当日のrunログがあり、上位3軸が確定しているとき
-- 軸を固定して継続制作すると決めた短期キャンペーン中
 
 ## 入力
 - 02_BRIEFS/TrendScan-Brief.md
+- 01_RULES/TrendSources.md
+
+## Reference Quality Gate（必須）
+1) 参照候補を30件集める
+2) 以下の基準でゲート判定し、合格のみ採用
+   - Tier1/2/3 以外は不合格
+   - 検索結果URL（`?search=` 等）は不合格
+   - 直接の事例ページ／公式の受賞・特集ページのみ
+   - 低品質（解像度不足/古い/意図不明）は不合格
+3) 合格参照が10件未満なら **FAIL**
+   - そのrunは生成に進まない
+   - FAIL理由をログに必ず記載
 
 ## 出力（固定）
 - 05_LOGS/runs/YYYY-MM-DD/run_001.md
-  - 参考リンク20件（Awwwards5/Behance7/Dribbble4/IG4）
+  - 参照候補30件
+  - Gate判定（合格/不合格＋理由）
+  - 合格参照一覧（10件以上）
   - トレンド要約（5行）
   - 表現軸カード（5〜12）
   - 上位3軸（採用）
   - 制作ユニット提案（本数）
 
-## 見る場所（固定）と確定条件
-- Awwwards：インタラクティブ/サイト表現の最前線
-- Behance：KV/3D/Caseの完成度が高い
-- Dribbble：瞬間火力のあるグラフィック
-- Instagram：投稿フォーマットに落ちた形
+## Axisカード要件（合格参照からのみ）
+- 参照URL
+- なぜトレンド扱いか（短文）
+- 使う要素（構図/質感/タイポ）
+- NG
 
 ## 失敗条件
-- 参考URLが不足
+- 合格参照が10件未満
 - 軸カードが抽象的すぎて制作に落ちない
-- 上位3軸の理由が弱い
 
 ## 成功条件
 - そのまま S2/S3 の入力として使える具体性がある
@@ -520,6 +596,7 @@ Production Gate を通過できない成果物は自動で差し戻す。
 
 ## 目的
 格納ルールに従って成果物を整理し、ログを更新する。
+採用物は 04_OUTPUT/approved/latest/ に集約する。
 
 ## いつ起動するか
 - S4で判定が出た直後
@@ -531,6 +608,7 @@ Production Gate を通過できない成果物は自動で差し戻す。
 ## 出力（固定）
 - approved：04_OUTPUT/.../approved に移動
 - revise：04_OUTPUT/.../revise に移動
+- latest：04_OUTPUT/approved/latest/ に採用物をコピー（またはリンク）
 - 05_LOGS/runs の該当runログに結果を追記
 
 ## 失敗条件
@@ -582,28 +660,31 @@ C2は demo/index.html → preview.png を生成する。
     files[f"05_LOGS/runs/{now}_run_001.md"] = f"""
 # Run Log: {now} / run_001
 
-## A. 参考リンク20件（URL）
-- [Awwwards] (placeholder) x5
-- [Behance] (placeholder) x7
-- [Dribbble] (placeholder) x4
-- [Instagram] (placeholder) x4
-
-## B. トレンド要約（5行）
+## A. 参照候補30件（URL）
 - (placeholder)
 
-## C. 表現軸カード（5〜12）
+## B. Gate判定（合格/不合格 + 理由）
 - (placeholder)
 
-## D. 上位3軸（今回採用）
+## C. 合格参照一覧（10件以上）
 - (placeholder)
 
-## E. 制作ユニット提案（本数）
+## D. トレンド要約（5行）
+- (placeholder)
+
+## E. 表現軸カード（5〜12）
+- (placeholder)
+
+## F. 上位3軸（今回採用）
+- (placeholder)
+
+## G. 制作ユニット提案（本数）
 - 3DTeaser: 3
 - InteractiveFV: 1
 - ExplainSlide: 1
 
-## F. Gate判定結果
-- (placeholder) 合格 / 不合格（品質NG） / BLOCKED（production未生成）
+## H. Gate判定結果
+- (placeholder) 合格 / 不合格（品質NG） / BLOCKED（production未生成） / FAILED（render error）
 """
 
     # -----------------------
