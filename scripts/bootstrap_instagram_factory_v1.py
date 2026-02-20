@@ -235,13 +235,15 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## Production Gate（必須）
 - production成果物は PNG / JPG / WebP のみ合格
 - SVG単体はスコア上限60（=approved不可）
-- productionレーンで preview.png が存在する場合のみ PASS
-- preview.png が無い場合は BLOCKED（production未生成）
+- productionレーンで preview.png が存在し、サイズ > 0 の場合のみ PASS
+- demo/index.html が無い場合は BLOCKED（production未生成）
+- preview.png が無い／サイズ0の場合は FAILED（render error）
 - Gate判定結果は 05_LOGS に必ず1行で記録（合格/不合格理由）
 
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足
-- BLOCKED（production未生成）: preview.png が無い
+- BLOCKED（production未生成）: demo/index.html が無い
+- FAILED（render error）: preview.png 生成失敗
 
 ## 採点項目
 1. 3秒で止まる（スクロールストップ）
@@ -487,14 +489,16 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - ループ回数の更新（最大2）
 
 ## Production Gate
-- productionレーンで preview.png が存在する場合のみ PASS
-- preview.png が無い場合は BLOCKED（production未生成）
+- productionレーンで preview.png が存在し、サイズ > 0 の場合のみ PASS
+- demo/index.html が無い場合は BLOCKED（production未生成）
+- preview.png が無い／サイズ0の場合は FAILED（render error）
 - production成果物は PNG/JPG/WebP のみ合格
 - SVG単体はスコア上限60（approved不可）
 
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足
-- BLOCKED（production未生成）: preview.png が無い
+- BLOCKED（production未生成）: demo/index.html が無い
+- FAILED（render error）: preview.png 生成失敗
 
 ## 成功条件
 - 判定が一貫している
@@ -529,38 +533,37 @@ Production Gate を通過できない成果物は自動で差し戻す。
 
 ## 目的
 C2（LP/Interactive/3D）専用の自動プレビューを生成し、production Gate を通す。
-C2_InteractiveFV_*_prompt-pack.md から demo/index.html を生成し、Playwrightで preview.png を出力する。
+demo/index.html から Google Chrome headless で preview.png を出力する。
 
 ## いつ起動するか
-- C2 の production用 Prompt Pack が作成されたとき
-- S4 QAで「BLOCKED（production未生成）」になったとき
+- C2 の demo/index.html が生成されているとき
+- S4 QAで「FAILED（render error）」になったとき
 
 ## いつ起動しないか
 - C2 以外のユニット
-- Prompt Pack が未作成のとき
+- demo/index.html が未生成のとき
 
 ## 入力
-- 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/C2_InteractiveFV_*_prompt-pack.md
+- 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
 
 ## 出力（固定）
-- demo: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
 - preview: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/preview/preview.png
 - 05_LOGS/runs に Gate判定結果（合格/不合格理由を1行）
 
 ## 手順
-1) Prompt Pack から demo/index.html を生成
-2) Playwright で demo/index.html を headless で開き、preview.png を生成
+1) Google Chrome headless で demo/index.html を開く
+2) 1080×1920 で preview.png を生成
 
 ## 実行コマンド
-- `npm install`
-- `npm run render:preview <prompt-pack>`
+- `node scripts/renderpolish_c2_preview.mjs 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html`
 
 ## 注意
-- Playwright が使えない場合は BLOCKED（production未生成）としてログに残す
+- Chrome パス: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+- Chrome が無い場合は FAILED（render error）としてログに残す
 - 外部有料APIは使わない（費用発生なし）
 
 ## 成功条件
-- preview.png が production レーンに生成され、Gate PASS
+- preview.png が production レーンに生成され、サイズ > 0 で Gate PASS
 """
 
     # -----------------------

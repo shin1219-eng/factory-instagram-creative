@@ -30,7 +30,6 @@ REQUIRED_PATHS = [
     "04_OUTPUT/prototype",
     "04_OUTPUT/production",
     "scripts/renderpolish_c2_preview.mjs",
-    "package.json",
 ]
 
 
@@ -47,24 +46,20 @@ def main() -> int:
             print(f"- {m}")
         return 1
 
-    # Gate check: if C2 prompt packs exist, demo/preview must exist per date folder
+    # Gate check: if demo/index.html exists, preview.png must exist and be non-empty
     gate_missing = []
-    prompt_packs = list(
-        repo_root.glob(
-            "04_OUTPUT/production/**/inbox/C2_InteractiveFV_*_prompt-pack.md"
-        )
-    )
-    for pack in prompt_packs:
-        date_dir = pack.parent.parent
-        demo = date_dir / "demo" / "index.html"
+    demos = list(repo_root.glob("04_OUTPUT/production/**/demo/index.html"))
+    for demo in demos:
+        date_dir = demo.parent.parent
         preview = date_dir / "preview" / "preview.png"
-        if not demo.exists():
-            gate_missing.append(f"{demo} (from {pack})")
         if not preview.exists():
-            gate_missing.append(f"{preview} (from {pack})")
+            gate_missing.append(f"{preview} (from {demo})")
+        else:
+            if preview.stat().st_size <= 0:
+                gate_missing.append(f"{preview} (empty, from {demo})")
 
     if gate_missing:
-        print("❌ Gate check failed (missing demo/preview for C2 prompt packs):")
+        print("❌ Gate check failed (missing/empty preview for demo):")
         for m in gate_missing:
             print(f"- {m}")
         return 1
