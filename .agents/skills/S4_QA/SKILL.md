@@ -25,7 +25,7 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - ループ回数の更新（最大2）
 
 ## Production Gate
-- productionレーンで preview.png が存在し、サイズ > 0 の場合のみ PASS
+- productionレーンで demo/preview.png が存在し、サイズ > 0 の場合のみ PASS
 - demo/index.html が無い場合は BLOCKED（production未生成）
 - preview.png が無い／サイズ0の場合は FAILED（render error）
 - production成果物は PNG/JPG/WebP のみ合格

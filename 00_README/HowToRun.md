@@ -14,6 +14,7 @@
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
   - production用Prompt Pack：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
+  - C1 production：S6で demo/index.html + demo/preview.png を生成
 
 ## 3) QA（採点）→ 出荷/差し戻し
 - Rubric合計80点以上 → approved

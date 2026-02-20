@@ -30,6 +30,7 @@ REQUIRED_PATHS = [
     "04_OUTPUT/.gitkeep",
     "04_OUTPUT/prototype/.gitkeep",
     "04_OUTPUT/production/.gitkeep",
+    "scripts/renderpolish_c1_kv.mjs",
     "scripts/renderpolish_c2_preview.mjs",
 ]
 

@@ -45,4 +45,5 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+  - C1 production：demo/index.html + demo/preview.png を最終成果物として扱う
 - 実行ログ：05_LOGS/runs/

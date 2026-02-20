@@ -20,10 +20,7 @@ function ensureDemoPath(inputPath) {
 
 function getPreviewPath(demoPath) {
   const demoDir = path.dirname(demoPath);
-  const dateDir = path.dirname(demoDir);
-  const previewDir = path.join(dateDir, "preview");
-  fs.mkdirSync(previewDir, { recursive: true });
-  return path.join(previewDir, "preview.png");
+  return path.join(demoDir, "preview.png");
 }
 
 function getChromePath() {

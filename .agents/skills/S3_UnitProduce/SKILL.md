@@ -28,4 +28,4 @@ prototype（SVG素体）と production 用Prompt Pack を分離して出力す�
 ## 注意
 - 長文テキストを画像に焼かない
 - 破綻（文字化け/ロゴっぽい文字/不自然な手など）があれば自己差し戻し候補にする
-- productionの本番画像はS6で生成（S3は作らない）
+- productionの本番画像はS6で生成（C1は demo/preview.png が最終成果物）

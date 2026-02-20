@@ -10,7 +10,8 @@
 - 文字：原則なし（後載せ前提）
 
 ## 出力（固定）
-- 画像：9:16（png推奨）
+- prototype：SVG素体（9:16）
+- production：demo/index.html + demo/preview.png（1080×1920）
 - メタデータ：同名の .md（目的/軸/参照URL/意図/Rubric/判定）
 - 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
 

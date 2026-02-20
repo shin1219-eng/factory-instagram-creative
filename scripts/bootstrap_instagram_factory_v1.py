@@ -111,6 +111,7 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+  - C1 production：demo/index.html + demo/preview.png を最終成果物として扱う
 - 実行ログ：05_LOGS/runs/
 """
 
@@ -153,6 +154,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
   - production用Prompt Pack：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
+  - C1 production：S6で demo/index.html + demo/preview.png を生成
 
 ## 3) QA（採点）→ 出荷/差し戻し
 - Rubric合計80点以上 → approved
@@ -235,7 +237,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## Production Gate（必須）
 - production成果物は PNG / JPG / WebP のみ合格
 - SVG単体はスコア上限60（=approved不可）
-- productionレーンで preview.png が存在し、サイズ > 0 の場合のみ PASS
+- productionレーンで demo/preview.png が存在し、サイズ > 0 の場合のみ PASS
 - demo/index.html が無い場合は BLOCKED（production未生成）
 - preview.png が無い／サイズ0の場合は FAILED（render error）
 - Gate判定結果は 05_LOGS に必ず1行で記録（合格/不合格理由）
@@ -258,6 +260,13 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 10. 権利的に安全（固有要素なし）
 11. 格納が正しい（命名・メタデータ）
 12. 転用耐性（KV/LP/広告への展開）
+
+## C1（3DTeaser/KV）評価の明確化
+- 必須重点: 「主役の強さ」「質感」「奥行き」
+- QAログに短い根拠を残す（各1行）
+  - 主役: 縮小しても主役が即判別できるか
+  - 質感: 光/影/素材の分離が明確か
+  - 奥行き: 前後関係が視覚的に成立するか
 
 ## 修正指示の書き方（不足表現）
 - 「主役が欠けている」→ 主役を1つに絞る
@@ -304,7 +313,8 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 文字：原則なし（後載せ前提）
 
 ## 出力（固定）
-- 画像：9:16（png推奨）
+- prototype：SVG素体（9:16）
+- production：demo/index.html + demo/preview.png（1080×1920）
 - メタデータ：同名の .md（目的/軸/参照URL/意図/Rubric/判定）
 - 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
 
@@ -458,7 +468,7 @@ prototype（SVG素体）と production 用Prompt Pack を分離して出力す�
 ## 注意
 - 長文テキストを画像に焼かない
 - 破綻（文字化け/ロゴっぽい文字/不自然な手など）があれば自己差し戻し候補にする
-- productionの本番画像はS6で生成（S3は作らない）
+- productionの本番画像はS6で生成（C1は demo/preview.png が最終成果物）
 """
 
     files[".agents/skills/S4_QA/SKILL.md"] = """
@@ -489,7 +499,7 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - ループ回数の更新（最大2）
 
 ## Production Gate
-- productionレーンで preview.png が存在し、サイズ > 0 の場合のみ PASS
+- productionレーンで demo/preview.png が存在し、サイズ > 0 の場合のみ PASS
 - demo/index.html が無い場合は BLOCKED（production未生成）
 - preview.png が無い／サイズ0の場合は FAILED（render error）
 - production成果物は PNG/JPG/WebP のみ合格
@@ -532,30 +542,30 @@ Production Gate を通過できない成果物は自動で差し戻す。
 # SKILL: S6 RenderPolish
 
 ## 目的
-C2（LP/Interactive/3D）専用の自動プレビューを生成し、production Gate を通す。
-demo/index.html から Google Chrome headless で preview.png を出力する。
+C1/C2 の production プレビューを生成し、production Gate を通す。
+C1は Prompt Pack → demo/index.html → preview.png を生成する。
+C2は demo/index.html → preview.png を生成する。
 
 ## いつ起動するか
-- C2 の demo/index.html が生成されているとき
+- C1 の production用 Prompt Pack が作成されたとき
+- C2 の demo/index.html が生成されたとき
 - S4 QAで「FAILED（render error）」になったとき
 
 ## いつ起動しないか
-- C2 以外のユニット
-- demo/index.html が未生成のとき
+- demo/index.html も Prompt Pack も未生成のとき
 
 ## 入力
-- 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
+- C1: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/C1_3DTeaser_*_prompt-pack.md
+- C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
 
 ## 出力（固定）
-- preview: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/preview/preview.png
+- C1/C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
+- C1/C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/preview.png
 - 05_LOGS/runs に Gate判定結果（合格/不合格理由を1行）
 
-## 手順
-1) Google Chrome headless で demo/index.html を開く
-2) 1080×1920 で preview.png を生成
-
 ## 実行コマンド
-- `node scripts/renderpolish_c2_preview.mjs 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html`
+- C1: `node scripts/renderpolish_c1_kv.mjs <prompt-pack>`
+- C2: `node scripts/renderpolish_c2_preview.mjs <demo/index.html>`
 
 ## 注意
 - Chrome パス: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
