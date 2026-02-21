@@ -12,10 +12,15 @@
 
 ## 2) 制作する（UnitProduce）
 - 入力：02_BRIEFS/Unit-Brief-*.md + 上位3軸
+- 制作ユニット：
+  - C1: 3D（Three.js）
+  - C2: Interactive FV
+  - C3: LP
+  - C4: HP（複数ページ or HP構成）
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
-  - production用Prompt Pack：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
-  - C1 production：Image Prompt Pack を生成（4案）
+  - production（コード）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
+    - `demo/index.html` と `demo/preview.png`
 
 ## 3) QA（採点）→ 出荷/差し戻し
 - Rubric合計80点以上 → approved
@@ -25,4 +30,4 @@
 ## 4) ShipAndStore（格納）
 - approved / revise に移動
 - 実行ログを更新
-- 04_OUTPUT/approved/latest/ に採用物を集約（C1画像を優先して1〜2枚）
+- 04_OUTPUT/approved/latest/ に採用物を集約（INDEX.mdを作成）

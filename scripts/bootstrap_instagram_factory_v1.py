@@ -66,6 +66,8 @@ def main() -> int:
         ".agents/skills/S5_ShipAndStore",
         ".agents/skills/S6_RenderPolish",
         ".agents/skills/_shared",
+        "vendor",
+        "vendor/three",
         "scripts",
     ]
     for d in dirs_to_create:
@@ -91,6 +93,12 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 2) UnitProduce：上位3軸 × 制作ユニットで制作
 3) QA：Rubric採点。80点未満は差分修正（最大2ループ）
 4) ShipAndStore：格納ルールに従い保存（inbox/approved/revise）
+
+## 制作ユニット（固定）
+- C1: 3D（Three.js）
+- C2: Interactive FV
+- C3: LP
+- C4: HP（複数ページ or HP構成）
 
 ## 見る場所（固定）
 - 01_RULES/TrendSources.md の Tier1/2/3 のみを使用
@@ -122,8 +130,9 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
-  - C1 production：Image Prompt Pack を生成し、画像（png/jpg/webp）が最終成果物
-  - latest：04_OUTPUT/approved/latest/ に採用物を集約（C1画像を優先して1〜2枚）
+  - production（コード）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+    - 各ユニットは `demo/index.html` と `demo/preview.png`
+  - latest：04_OUTPUT/approved/latest/ に採用物を集約（INDEX.mdを作成）
 - 実行ログ：05_LOGS/runs/
 """
 
@@ -143,10 +152,10 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 固定するのは「出力仕様」「採点」「格納ルール」「不変条件」
 
 ## 想定成果物（制作ユニット）
-- 3Dティザー（静止画 9:16）
-- インタラクティブFV（短尺動画 or スクショ3枚）
-- 解説スライド（文字少なめ）
-- Study case（架空ブランド：KV + LP断片 + Before/After）
+- C1: 3D（Three.js）
+- C2: Interactive FV
+- C3: LP
+- C4: HP（複数ページ or HP構成）
 """
 
     files["00_README/HowToRun.md"] = """
@@ -164,10 +173,15 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 
 ## 2) 制作する（UnitProduce）
 - 入力：02_BRIEFS/Unit-Brief-*.md + 上位3軸
+- 制作ユニット：
+  - C1: 3D（Three.js）
+  - C2: Interactive FV
+  - C3: LP
+  - C4: HP（複数ページ or HP構成）
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
-  - production用Prompt Pack：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
-  - C1 production：Image Prompt Pack を生成（4案）
+  - production（コード）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
+    - `demo/index.html` と `demo/preview.png`
 
 ## 3) QA（採点）→ 出荷/差し戻し
 - Rubric合計80点以上 → approved
@@ -177,7 +191,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 ## 4) ShipAndStore（格納）
 - approved / revise に移動
 - 実行ログを更新
-- 04_OUTPUT/approved/latest/ に採用物を集約（C1画像を優先して1〜2枚）
+- 04_OUTPUT/approved/latest/ に採用物を集約（INDEX.mdを作成）
 """
 
     files["01_RULES/Design-DNA.md"] = """
@@ -249,17 +263,15 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 最大2ループで打ち切り
 
 ## Production Gate（必須）
-- production成果物は PNG / JPG / WebP のみ合格
-- SVG単体はスコア上限60（=approved不可）
-- C1は画像生成レーン：生成画像（png/jpg/webp）が存在し、**サイズ>=120KB** なら PASS
-- 画像が無い場合は BLOCKED（生成待ち）
-- 生成失敗は FAILED（理由をログ）
+- demo/index.html が存在する
+- demo/preview.png が存在し、サイズ > 0
+- 上記で PASS。欠けている場合は BLOCKED、レンダ失敗は FAILED
 - Gate判定結果は 05_LOGS に必ず1行で記録（合格/不合格理由）
 
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足
-- BLOCKED（生成待ち）: 画像が未生成
-- FAILED（render error）: 生成失敗の理由を明記
+- BLOCKED（production未生成）: demo/index.html が無い
+- FAILED（render error）: preview.png 生成失敗の理由を明記
 
 ## 採点項目
 1. 3秒で止まる（スクロールストップ）
@@ -366,7 +378,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 """
 
     files["02_BRIEFS/Unit-Brief-3DTeaser.md"] = """
-# Unit Brief: 3D Teaser（9:16 静止画）
+# Unit Brief: C1 3D Teaser（Three.js / 9:16）
 
 ## 目的
 一枚で「技術力・表現力」が伝わるティザーを作る。
@@ -379,9 +391,9 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 
 ## 出力（固定）
 - prototype：SVG素体（9:16）
-- production：Image Prompt Pack（C1_KV_<axis>_image-pack.md）
-  - 1軸につき4案（4プロンプト）
-  - 各案に「主役/質感/背景/光/構図/禁止事項」を明記
+- production（コード）：
+  - demo/index.html（Three.jsで3Dヒーロー）
+  - demo/preview.png（Gate用プレビュー）
 - メタデータ：同名の .md（目的/軸/参照URL/意図/Rubric/判定）
 - 保存先：
   - prototype：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
@@ -394,7 +406,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 """
 
     files["02_BRIEFS/Unit-Brief-InteractiveFV.md"] = """
-# Unit Brief: Interactive FV（短尺動画 or スクショ3枚）
+# Unit Brief: C2 Interactive FV（9:16 / code）
 
 ## 目的
 インタラクティブなFVの気持ちよさが一目で伝わる投稿素材を作る。
@@ -405,22 +417,53 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 文字：最小（基本はなし）
 
 ## 出力（固定）
-- 動画（短尺） or スクショ3枚
-- 9:16で投稿化できる形に整える
+- production（コード）：
+  - demo/index.html（インタラクティブ表現）
+  - demo/preview.png（Gate用プレビュー）
 - メタデータ .md を同梱
-- 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+- 保存先：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
 """
 
     files["02_BRIEFS/Unit-Brief-ExplainSlide.md"] = """
-# Unit Brief: Explain Slide（文字少なめ）
+# Unit Brief: C3 LP（9:16 / code）
 
 ## 目的
-「何が凄いか」を3秒で理解させる補助スライドを作る。
+1枚で価値提案が伝わる LP 断片を作る（投稿化できる構成）。
 
 ## ルール
-- 文字は最小限（1〜2行）
+- 文字は最小限（最大2行）
 - 専門用語は「意味→用語名」の順で1行補足
 - 誇張の連発は禁止
+
+## 出力（固定）
+- production（コード）：
+  - demo/index.html（LP断片）
+  - demo/preview.png（Gate用プレビュー）
+- メタデータ .md を同梱
+"""
+
+    files["02_BRIEFS/Unit-Brief-HP.md"] = """
+# Unit Brief: C4 HP（複数ページ or HP構成 / code）
+
+## 目的
+HPとして成立する構成をコードで作る（複数ページ or HP構成）。
+
+## 入力
+- 採用軸：TrendScanの上位3軸から1つ
+- トーン：ハイエンド寄り
+- 文字：最小限（要点のみ）
+
+## 出力（固定）
+- production（コード）：
+  - demo/index.html（HPのメイン）
+  - demo/preview.png（Gate用プレビュー）
+  - 必要なら複数ページHTMLを同梱（about / product / contact など）
+- メタデータ .md を同梱
+- 保存先：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
+
+## NG
+- 外部CDN依存
+- 文字過多
 """
 
     # -------- Skills (Agent-visible spec) --------
@@ -541,16 +584,14 @@ prototype（SVG素体）と production 用Prompt Pack を分離して出力す�
 - prototype（SVG素体）:
   - 04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
   - 画像（SVG）＋同名メタデータ .md
-- production用Prompt Pack:
-  - 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
-  - C1: C1_KV_<axis>_image-pack.md（4案、主役/質感/背景/光/構図/禁止事項）
-  - C2/C3: *_prompt-pack.md（形状/質感/構図/色/禁止事項）
+- production（コード）:
+  - 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/<unit_id>/demo/index.html
+  - 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/<unit_id>/demo/preview.png
 
 ## 注意
 - 長文テキストを画像に焼かない
 - 破綻（文字化け/ロゴっぽい文字/不自然な手など）があれば自己差し戻し候補にする
-- C1は TrendScan v2 の上位軸のみを使う（品質ゲート未達なら生成しない）
-- productionの本番画像は外部生成（C1は image-pack → 画像）
+- 外部CDNは使わない（vendor/ を参照）
 """
 
     files[".agents/skills/S4_QA/SKILL.md"] = """
@@ -581,18 +622,15 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - ループ回数の更新（最大2）
 
 ## Production Gate
-- C1: 生成画像（png/jpg/webp）が存在し、サイズ >=120KB の場合のみ PASS
-- C1: 画像が無い場合は BLOCKED（生成待ち）
-- C1: 画像サイズ不足/形式不正は FAILED（render error）
-- C2: demo/preview.png が存在し、サイズ > 0 の場合のみ PASS
-- C2: preview.png が無い／サイズ0の場合は FAILED（render error）
-- production成果物は PNG/JPG/WebP のみ合格
-- SVG単体はスコア上限60（approved不可）
+- C1〜C4 共通:
+  - demo/index.html が存在する
+  - demo/preview.png が存在し、サイズ > 0
+  - 以上で PASS。欠けている場合は BLOCKED、レンダ失敗は FAILED
 
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足
-- BLOCKED（生成待ち）: 画像が未生成
-- FAILED（render error）: 生成失敗/サイズ不足/形式不正の理由を明記
+- BLOCKED（production未生成）: demo/index.html が無い
+- FAILED（render error）: preview.png 生成失敗の理由を明記
 
 ## 成功条件
 - 判定が一貫している
@@ -629,25 +667,24 @@ Production Gate を通過できない成果物は自動で差し戻す。
 # SKILL: S6 RenderPolish
 
 ## 目的
-C2 の production プレビューを生成し、production Gate を通す。
+C1〜C4 の production プレビューを生成し、production Gate を通す。
 
 ## いつ起動するか
-- C2 の demo/index.html が生成されたとき
+- demo/index.html が生成されたとき
 - S4 QAで「FAILED（render error）」になったとき
 
 ## いつ起動しないか
 - demo/index.html が未生成のとき
-- C1 のみを扱うとき（C1は Image Prompt Pack → 外部生成）
 
 ## 入力
-- C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/index.html
+- C1〜C4: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/<unit_id>/demo/index.html
 
 ## 出力（固定）
-- C2: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/demo/preview.png
+- C1〜C4: 04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/<unit_id>/demo/preview.png
 - 05_LOGS/runs に Gate判定結果（合格/不合格理由を1行）
 
 ## 実行コマンド
-- C2: `node scripts/renderpolish_c2_preview.mjs <demo/index.html>`
+- `node scripts/renderpolish_preview.mjs <demo/index.html>`
 
 ## 注意
 - Chrome パス: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome

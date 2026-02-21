@@ -1,4 +1,4 @@
-# Unit Brief: 3D Teaser（9:16 静止画）
+# Unit Brief: C1 3D Teaser（Three.js / 9:16）
 
 ## 目的
 一枚で「技術力・表現力」が伝わるティザーを作る。
@@ -11,9 +11,9 @@
 
 ## 出力（固定）
 - prototype：SVG素体（9:16）
-- production：Image Prompt Pack（C1_KV_<axis>_image-pack.md）
-  - 1軸につき4案（4プロンプト）
-  - 各案に「主役/質感/背景/光/構図/禁止事項」を明記
+- production（コード）：
+  - demo/index.html（Three.jsで3Dヒーロー）
+  - demo/preview.png（Gate用プレビュー）
 - メタデータ：同名の .md（目的/軸/参照URL/意図/Rubric/判定）
 - 保存先：
   - prototype：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/

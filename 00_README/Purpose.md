@@ -13,7 +13,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 固定するのは「出力仕様」「採点」「格納ルール」「不変条件」
 
 ## 想定成果物（制作ユニット）
-- 3Dティザー（静止画 9:16）
-- インタラクティブFV（短尺動画 or スクショ3枚）
-- 解説スライド（文字少なめ）
-- Study case（架空ブランド：KV + LP断片 + Before/After）
+- C1: 3D（Three.js）
+- C2: Interactive FV
+- C3: LP
+- C4: HP（複数ページ or HP構成）

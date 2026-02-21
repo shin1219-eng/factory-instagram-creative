@@ -6,17 +6,15 @@
 - 最大2ループで打ち切り
 
 ## Production Gate（必須）
-- production成果物は PNG / JPG / WebP のみ合格
-- SVG単体はスコア上限60（=approved不可）
-- C1は画像生成レーン：生成画像（png/jpg/webp）が存在し、**サイズ>=120KB** なら PASS
-- 画像が無い場合は BLOCKED（生成待ち）
-- 生成失敗は FAILED（理由をログ）
+- demo/index.html が存在する
+- demo/preview.png が存在し、サイズ > 0
+- 上記で PASS。欠けている場合は BLOCKED、レンダ失敗は FAILED
 - Gate判定結果は 05_LOGS に必ず1行で記録（合格/不合格理由）
 
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足
-- BLOCKED（生成待ち）: 画像が未生成
-- FAILED（render error）: 生成失敗の理由を明記
+- BLOCKED（production未生成）: demo/index.html が無い
+- FAILED（render error）: preview.png 生成失敗の理由を明記
 
 ## 採点項目
 1. 3秒で止まる（スクロールストップ）

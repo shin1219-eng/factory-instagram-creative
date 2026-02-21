@@ -1,4 +1,4 @@
-# Unit Brief: Interactive FV（短尺動画 or スクショ3枚）
+# Unit Brief: C2 Interactive FV（9:16 / code）
 
 ## 目的
 インタラクティブなFVの気持ちよさが一目で伝わる投稿素材を作る。
@@ -9,7 +9,8 @@
 - 文字：最小（基本はなし）
 
 ## 出力（固定）
-- 動画（短尺） or スクショ3枚
-- 9:16で投稿化できる形に整える
+- production（コード）：
+  - demo/index.html（インタラクティブ表現）
+  - demo/preview.png（Gate用プレビュー）
 - メタデータ .md を同梱
-- 保存先：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
+- 保存先：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/

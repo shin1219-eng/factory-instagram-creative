@@ -13,6 +13,12 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 3) QA：Rubric採点。80点未満は差分修正（最大2ループ）
 4) ShipAndStore：格納ルールに従い保存（inbox/approved/revise）
 
+## 制作ユニット（固定）
+- C1: 3D（Three.js）
+- C2: Interactive FV
+- C3: LP
+- C4: HP（複数ページ or HP構成）
+
 ## 見る場所（固定）
 - 01_RULES/TrendSources.md の Tier1/2/3 のみを使用
 - 検索結果URL（`?search=` など）は禁止
@@ -42,7 +48,7 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
 - Skill仕様：.agents/skills/*/SKILL.md
 - 出力：
   - prototype（SVG素体）：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
-  - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
-  - C1 production：Image Prompt Pack を生成し、画像（png/jpg/webp）が最終成果物
-  - latest：04_OUTPUT/approved/latest/ に採用物を集約（C1画像を優先して1〜2枚）
+  - production（コード）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
+    - 各ユニットは `demo/index.html` と `demo/preview.png`
+  - latest：04_OUTPUT/approved/latest/ に採用物を集約（INDEX.mdを作成）
 - 実行ログ：05_LOGS/runs/

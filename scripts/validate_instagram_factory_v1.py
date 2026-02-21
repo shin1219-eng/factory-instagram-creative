@@ -19,6 +19,7 @@ REQUIRED_PATHS = [
     "02_BRIEFS/Unit-Brief-3DTeaser.md",
     "02_BRIEFS/Unit-Brief-InteractiveFV.md",
     "02_BRIEFS/Unit-Brief-ExplainSlide.md",
+    "02_BRIEFS/Unit-Brief-HP.md",
     ".agents/skills/_shared/CONVENTIONS.md",
     ".agents/skills/S1_TrendScan/SKILL.md",
     ".agents/skills/S2_AxisSelect/SKILL.md",
@@ -32,7 +33,8 @@ REQUIRED_PATHS = [
     "04_OUTPUT/prototype/.gitkeep",
     "04_OUTPUT/production/.gitkeep",
     "04_OUTPUT/approved/latest/.gitkeep",
-    "scripts/renderpolish_c2_preview.mjs",
+    "scripts/renderpolish_preview.mjs",
+    "vendor/three/three.min.js",
 ]
 
 
