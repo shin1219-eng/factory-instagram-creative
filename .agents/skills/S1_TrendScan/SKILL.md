@@ -38,12 +38,20 @@
 ## Axisカード要件（合格参照からのみ）
 - 参照URL
 - なぜトレンド扱いか（短文）
-- 使う要素（構図/質感/タイポ）
-- NG
+- 実装要素
+  - HeroGeometry
+  - Material
+  - Lighting
+  - Camera
+  - Background
+  - Motion
+  - Composition
+  - Do-Not
 
 ## 失敗条件
 - 合格参照が10件未満
 - 軸カードが抽象的すぎて制作に落ちない
+ - Axisカードの実装要素が欠けている
 
 ## 成功条件
 - そのまま S2/S3 の入力として使える具体性がある

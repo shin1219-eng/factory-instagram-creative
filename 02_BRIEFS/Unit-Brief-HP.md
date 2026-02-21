@@ -16,6 +16,12 @@ HPとして成立する構成をコードで作る（複数ページ or HP構成
 - メタデータ .md を同梱
 - 保存先：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
 
+## 必須セクション（欠けたらFAILED）
+- Hero+Nav
+- Works（3）
+- About
+- Contact
+
 ## NG
 - 外部CDN依存
 - 文字過多

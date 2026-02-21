@@ -362,6 +362,20 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - 表現軸カードは5〜12個出す（合格参照からのみ）
 - 上位3軸をスコアリングで選ぶ
 
+## Axisカード必須項目（実装要素）
+各Axisカードに以下を必ず含める。
+- 参照URL
+- なぜトレンド扱いか（短文）
+- 実装要素
+  - HeroGeometry
+  - Material
+  - Lighting
+  - Camera
+  - Background
+  - Motion
+  - Composition
+  - Do-Not
+
 ## スコアリング軸（各10点）
 - 止まる：IGで目が止まるか
 - 作れる：量産の難易度が現実的か
@@ -399,6 +413,14 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
   - prototype：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
   - production：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
 
+## 必須実装要素（欠けたらFAILED）
+- 厚み（ボリュームのある形状）
+- 質感（素材感の差が出る）
+- 接地影（コンタクトシャドウ）
+- 背景ノイズ
+- 微パララックス（カメラ/光の微動）
+- 単純回転のみは禁止
+
 ## NG
 - ロゴっぽい文字の生成
 - 読めない日本語の焼き込み
@@ -422,6 +444,11 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
   - demo/preview.png（Gate用プレビュー）
 - メタデータ .md を同梱
 - 保存先：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
+
+## 必須セクション（欠けたらFAILED）
+- Hero
+- UI overlay
+- interactive motion
 """
 
     files["02_BRIEFS/Unit-Brief-ExplainSlide.md"] = """
@@ -440,6 +467,12 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
   - demo/index.html（LP断片）
   - demo/preview.png（Gate用プレビュー）
 - メタデータ .md を同梱
+
+## 必須セクション（欠けたらFAILED）
+- Hero
+- Proof（3）
+- Offer
+- CTA
 """
 
     files["02_BRIEFS/Unit-Brief-HP.md"] = """
@@ -464,6 +497,12 @@ HPとして成立する構成をコードで作る（複数ページ or HP構成
 ## NG
 - 外部CDN依存
 - 文字過多
+
+## 必須セクション（欠けたらFAILED）
+- Hero+Nav
+- Works（3）
+- About
+- Contact
 """
 
     # -------- Skills (Agent-visible spec) --------
@@ -520,8 +559,15 @@ HPとして成立する構成をコードで作る（複数ページ or HP構成
 ## Axisカード要件（合格参照からのみ）
 - 参照URL
 - なぜトレンド扱いか（短文）
-- 使う要素（構図/質感/タイポ）
-- NG
+- 実装要素
+  - HeroGeometry
+  - Material
+  - Lighting
+  - Camera
+  - Background
+  - Motion
+  - Composition
+  - Do-Not
 
 ## 失敗条件
 - 合格参照が10件未満
@@ -592,6 +638,8 @@ prototype（SVG素体）と production 用Prompt Pack を分離して出力す�
 - 長文テキストを画像に焼かない
 - 破綻（文字化け/ロゴっぽい文字/不自然な手など）があれば自己差し戻し候補にする
 - 外部CDNは使わない（vendor/ を参照）
+- C2/C3/C4 は必須セクションが欠けたら FAILED
+- C1 は厚み/質感/接地影/背景ノイズ/微パララックスを必須とし、単純回転のみは禁止
 """
 
     files[".agents/skills/S4_QA/SKILL.md"] = """
@@ -626,6 +674,12 @@ Production Gate を通過できない成果物は自動で差し戻す。
   - demo/index.html が存在する
   - demo/preview.png が存在し、サイズ > 0
   - 以上で PASS。欠けている場合は BLOCKED、レンダ失敗は FAILED
+
+## セクション必須（欠けたらFAILED）
+- C2: Hero + UI overlay + interactive motion
+- C3: Hero + Proof(3) + Offer + CTA
+- C4: Hero+Nav + Works(3) + About + Contact
+- C1: 厚み/質感/接地影/背景ノイズ/微パララックス（単純回転のみ禁止）
 
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足

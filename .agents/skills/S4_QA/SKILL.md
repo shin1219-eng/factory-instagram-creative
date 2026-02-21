@@ -30,6 +30,12 @@ Production Gate を通過できない成果物は自動で差し戻す。
   - demo/preview.png が存在し、サイズ > 0
   - 以上で PASS。欠けている場合は BLOCKED、レンダ失敗は FAILED
 
+## セクション必須（欠けたらFAILED）
+- C2: Hero + UI overlay + interactive motion
+- C3: Hero + Proof(3) + Offer + CTA
+- C4: Hero+Nav + Works(3) + About + Contact
+- C1: 厚み/質感/接地影/背景ノイズ/微パララックス（単純回転のみ禁止）
+
 ## Gateログ表記
 - 不合格（品質NG）: 画質/質感/主役/構図の品質不足
 - BLOCKED（production未生成）: demo/index.html が無い

@@ -14,3 +14,8 @@
   - demo/preview.png（Gate用プレビュー）
 - メタデータ .md を同梱
 - 保存先：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
+
+## 必須セクション（欠けたらFAILED）
+- Hero
+- UI overlay
+- interactive motion

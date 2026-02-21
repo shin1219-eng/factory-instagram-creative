@@ -14,6 +14,20 @@
 - 表現軸カードは5〜12個出す（合格参照からのみ）
 - 上位3軸をスコアリングで選ぶ
 
+## Axisカード必須項目（実装要素）
+各Axisカードに以下を必ず含める。
+- 参照URL
+- なぜトレンド扱いか（短文）
+- 実装要素
+  - HeroGeometry
+  - Material
+  - Lighting
+  - Camera
+  - Background
+  - Motion
+  - Composition
+  - Do-Not
+
 ## スコアリング軸（各10点）
 - 止まる：IGで目が止まるか
 - 作れる：量産の難易度が現実的か

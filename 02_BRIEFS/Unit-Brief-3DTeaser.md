@@ -19,6 +19,14 @@
   - prototype：04_OUTPUT/prototype/YYYY-MM/YYYY-MM-DD/inbox/
   - production：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/
 
+## 必須実装要素（欠けたらFAILED）
+- 厚み（ボリュームのある形状）
+- 質感（素材感の差が出る）
+- 接地影（コンタクトシャドウ）
+- 背景ノイズ
+- 微パララックス（カメラ/光の微動）
+- 単純回転のみは禁止
+
 ## NG
 - ロゴっぽい文字の生成
 - 読めない日本語の焼き込み

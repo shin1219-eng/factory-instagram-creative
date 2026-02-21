@@ -13,3 +13,9 @@
   - demo/index.html（LP断片）
   - demo/preview.png（Gate用プレビュー）
 - メタデータ .md を同梱
+
+## 必須セクション（欠けたらFAILED）
+- Hero
+- Proof（3）
+- Offer
+- CTA
