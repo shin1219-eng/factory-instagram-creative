@@ -132,7 +132,7 @@ RePrompt公式（国内向け）の Instagram 制作を「調査 → 軸生成 �
   - production（PNG/JPG/WebP）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
   - production（コード）：04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/(inbox|approved|revise)
     - 各ユニットは `demo/index.html` と `demo/preview.png`
-  - latest：04_OUTPUT/approved/latest/ に採用物を集約（INDEX.mdを作成）
+  - latest：04_OUTPUT/approved/latest/ に採用物を集約（INDEX.md と review.html を作成）
 - 実行ログ：05_LOGS/runs/
 """
 
@@ -192,6 +192,7 @@ RePrompt公式（国内向け）のInstagram投稿を、以下の一連フロー
 - approved / revise に移動
 - 実行ログを更新
 - 04_OUTPUT/approved/latest/ に採用物を集約（INDEX.mdを作成）
+- `scripts/build_latest_review.py` で review.html を生成
 """
 
     files["01_RULES/Design-DNA.md"] = """
@@ -709,7 +710,7 @@ Production Gate を通過できない成果物は自動で差し戻す。
 - approved：04_OUTPUT/.../approved に移動
 - revise：04_OUTPUT/.../revise に移動
 - latest：04_OUTPUT/approved/latest/ に採用物をコピー（またはリンク）
-  - C1の勝ち画像を優先して1〜2枚集約
+  - 採用物のみを集約し、INDEX.md と review.html を作成
 - 05_LOGS/runs の該当runログに結果を追記
 
 ## 失敗条件

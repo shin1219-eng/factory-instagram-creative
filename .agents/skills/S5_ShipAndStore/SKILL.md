@@ -15,7 +15,7 @@
 - approved：04_OUTPUT/.../approved に移動
 - revise：04_OUTPUT/.../revise に移動
 - latest：04_OUTPUT/approved/latest/ に採用物をコピー（またはリンク）
-  - 採用物のみを集約し、INDEX.md を作成
+  - 採用物のみを集約し、INDEX.md と review.html を作成
 - 05_LOGS/runs の該当runログに結果を追記
 
 ## 失敗条件

@@ -31,3 +31,4 @@
 - approved / revise に移動
 - 実行ログを更新
 - 04_OUTPUT/approved/latest/ に採用物を集約（INDEX.mdを作成）
+- `scripts/build_latest_review.py` で review.html を生成
