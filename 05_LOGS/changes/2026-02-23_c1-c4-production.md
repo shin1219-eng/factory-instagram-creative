@@ -1,17 +1,20 @@
-# Change Log: 2026-02-23 / C1-C4 Production (obsidian-ring/lattice-bloom/paper-veil)
+# Change Log: 2026-02-23 / C1-C4 Production (diversified)
 
 ## What
-- TrendScan run_001 を追加（同一ドメイン上限は要承認／参照URLは過去ログ再利用）
-- C1/C2/C3/C4 の出力を作成し approved へ格納（各 demo/index.html と preview.png）
+- 多様化ルールを追加（TrendSources / TrendScan-Brief / Guardrails）
+- TrendScan run_001 をユーザー提供URLで更新（Tier混在は例外扱い）
+- C1/C2/C3/C4 を新規作成（orbit-sculpt / aura-field / mono-editorial / catalog-frames）
 - latest 集約と review.html を更新
-- QAログを追加
+- QAログを更新
+- 旧C1〜C4（obsidian-ring/lattice-bloom/paper-veil）を置き換え
 
 ## Why
-- 本日分の各制作ユニットを1本ずつ出力するため
+- 参照偏重を解消し、毎回違う出力にするため
+- 質の底上げと投稿ネタの多様化
 
 ## Impact
-- 04_OUTPUT/production/2026-02/2026-02-23/approved/ に4ユニット追加
-- 04_OUTPUT/approved/latest/ に4ユニット追加
+- 04_OUTPUT/production/2026-02/2026-02-23/approved/ に4ユニット追加（旧分は削除）
+- 04_OUTPUT/approved/latest/ を更新
 
 Gate判定結果: PASS（C1/C2/C3/C4 すべて demo/index.html と demo/preview.png を確認）
 補足: Chrome headless が落ちるため preview.png はPILで生成

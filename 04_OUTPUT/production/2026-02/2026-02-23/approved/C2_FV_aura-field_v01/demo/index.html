@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
+<title>C2_FV_aura-field_v01</title>
+<style>
+:root {
+  --bg-1: #f2f1ee;
+  --bg-2: #dfe6ef;
+  --ink: #1b1e24;
+  --muted: rgba(27,30,36,0.5);
+  --aura-1: rgba(140, 190, 255, 0.55);
+  --aura-2: rgba(255, 170, 140, 0.45);
+  --aura-3: rgba(120, 220, 190, 0.45);
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 30% 20%, #ffffff 0%, var(--bg-1) 45%, var(--bg-2) 100%);
+  font-family: "Manrope", "Space Grotesk", Arial, sans-serif;
+  color: var(--ink);
+}
+#grain {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0 1px, transparent 1px 4px);
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+#stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+}
+.aura {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, var(--aura-1), transparent 60%),
+    radial-gradient(circle at 70% 60%, var(--aura-2), transparent 62%),
+    radial-gradient(circle at 50% 50%, var(--aura-3), transparent 65%);
+  filter: blur(0.5px);
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease-out;
+}
+.aura.layer-2 { width: 380px; height: 380px; opacity: 0.75; }
+.aura.layer-3 { width: 260px; height: 260px; opacity: 0.65; }
+.ring {
+  position: absolute;
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  border: 1px solid rgba(27,30,36,0.08);
+  box-shadow: 0 0 60px rgba(120,160,220,0.18);
+}
+#orb {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1b1e24;
+  box-shadow: 0 0 18px rgba(27,30,36,0.4);
+  transform: translate(-50%, -50%);
+}
+#title {
+  position: absolute;
+  bottom: 20%;
+  left: 10%;
+  font-size: 34px;
+  letter-spacing: 0.01em;
+}
+#label {
+  position: absolute;
+  bottom: 16%;
+  left: 10%;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+@media (max-width: 720px) {
+  .aura { width: 360px; height: 360px; }
+  .aura.layer-2 { width: 260px; height: 260px; }
+  .aura.layer-3 { width: 180px; height: 180px; }
+  .ring { width: 420px; height: 420px; }
+  #title { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+<div id="grain"></div>
+<div id="stage">
+  <div class="ring"></div>
+  <div class="aura layer-1"></div>
+  <div class="aura layer-2"></div>
+  <div class="aura layer-3"></div>
+  <div id="orb"></div>
+</div>
+<div id="title">Aura Field</div>
+<div id="label">Interactive FV</div>
+<script>
+const layers = document.querySelectorAll('.aura');
+const orb = document.getElementById('orb');
+
+function move(x, y) {
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  const dx = (x - cx) / cx;
+  const dy = (y - cy) / cy;
+
+  layers.forEach((layer, i) => {
+    const depth = (i + 1) * 18;
+    const rx = dy * -6;
+    const ry = dx * 7;
+    layer.style.transform = `translate3d(${dx * depth}px, ${dy * depth}px, 0) rotateX(${rx}deg) rotateY(${ry}deg)`;
+  });
+
+  orb.style.left = `${x}px`;
+  orb.style.top = `${y}px`;
+}
+
+window.addEventListener('pointermove', (e) => move(e.clientX, e.clientY));
+move(window.innerWidth * 0.55, window.innerHeight * 0.46);
+</script>
+</body>
+</html>
