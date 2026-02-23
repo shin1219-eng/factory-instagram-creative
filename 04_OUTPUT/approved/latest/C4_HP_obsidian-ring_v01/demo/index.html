@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
+<title>C4_HP_obsidian-ring_v01</title>
+<style>
+:root {
+  --bg-1: #141518;
+  --bg-2: #0a0b0e;
+  --ink: #eef2f8;
+  --muted: rgba(238,242,248,0.6);
+  --accent: #cbb9a3;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(120% 90% at 28% 18%, #212634 0%, var(--bg-1) 45%, var(--bg-2) 100%);
+  color: var(--ink);
+  font-family: "Sora", "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+}
+#page {
+  width: 100%;
+  height: 100%;
+  padding: 54px 52px;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 28px;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+}
+.hero h1 {
+  font-size: 38px;
+  margin: 0 0 10px 0;
+}
+.hero p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ring-stage {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  border-radius: 32px;
+  background: linear-gradient(140deg, rgba(203,185,163,0.15), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.12);
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(10,12,18,0.6);
+}
+.ring-stage::before {
+  content: "";
+  position: absolute;
+  inset: 18% auto auto 18%;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 2px solid rgba(180,200,255,0.35);
+  box-shadow: 0 0 40px rgba(120,160,255,0.25);
+}
+.ring-stage::after {
+  content: "";
+  position: absolute;
+  inset: auto 18% 18% auto;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(230,220,200,0.9), rgba(230,220,200,0.1) 70%, transparent 100%);
+  filter: blur(1px);
+}
+.section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.card {
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(10,12,16,0.55);
+  padding: 16px;
+  min-height: 84px;
+}
+.card h3 {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  #page { padding: 40px 26px; gap: 20px; }
+  .hero { grid-template-columns: 1fr; }
+  .section { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="page">
+  <nav>
+    <div>RePrompt</div>
+    <div>Home</div>
+  </nav>
+
+  <div class="hero">
+    <div>
+      <h1>Obsidian Ring Studio</h1>
+      <p>A homepage layout with one hero, wide spacing, and a focused material story.</p>
+    </div>
+    <div class="ring-stage" aria-hidden="true"></div>
+  </div>
+
+  <div class="section">
+    <div class="card">
+      <h3>Work</h3>
+      <p>Three case slots, one rhythm.</p>
+    </div>
+    <div class="card">
+      <h3>Services</h3>
+      <p>Two lines max, no clutter.</p>
+    </div>
+    <div class="card">
+      <h3>Insights</h3>
+      <p>Short headline list, no dates baked in.</p>
+    </div>
+  </div>
+
+  <footer>
+    <div>Contact</div>
+    <div>Tokyo</div>
+  </footer>
+</div>
+</body>
+</html>
