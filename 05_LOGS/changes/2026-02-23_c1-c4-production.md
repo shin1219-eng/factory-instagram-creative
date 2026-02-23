@@ -2,7 +2,7 @@
 
 ## What
 - 多様化ルールを追加（TrendSources / TrendScan-Brief / Guardrails）
-- TrendScan run_001 を再検証し、未確認/タイムアウト分を Tier1/2 で置換
+- TrendScan run_001 をユーザー提供30件で実行（未確認のまま進行）
 - C1/C2/C3/C4 を新規作成（orbit-sculpt / aura-field / mono-editorial / catalog-frames）
 - latest 集約と review.html を更新
 - QAログを更新
@@ -11,7 +11,7 @@
 ## Why
 - 参照偏重を解消し、毎回違う出力にするため
 - 質の底上げと投稿ネタの多様化
-- 参照URLの実ページ確認を反映するため
+- WebGL/JS必須前提で未確認でも制作を進めるため
 
 ## Impact
 - 04_OUTPUT/production/2026-02/2026-02-23/approved/ に4ユニット追加（旧分は削除）
