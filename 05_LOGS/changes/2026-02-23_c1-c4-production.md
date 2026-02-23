@@ -2,7 +2,7 @@
 
 ## What
 - 多様化ルールを追加（TrendSources / TrendScan-Brief / Guardrails）
-- TrendScan run_001 をユーザー提供URLで更新（Tier混在は例外扱い）
+- TrendScan run_001 をユーザー提供URLで検証し更新（Reachable 19 / Fail 11）
 - C1/C2/C3/C4 を新規作成（orbit-sculpt / aura-field / mono-editorial / catalog-frames）
 - latest 集約と review.html を更新
 - QAログを更新
