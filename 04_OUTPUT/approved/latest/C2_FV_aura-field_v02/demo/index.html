@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
+<title>C2_FV_aura-field_v02</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&display=swap');
+:root {
+  --bg-1: #f6f4ef;
+  --bg-2: #dfe7f2;
+  --ink: #1b1e24;
+  --muted: rgba(27,30,36,0.5);
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 30% 20%, #ffffff 0%, var(--bg-1) 50%, var(--bg-2) 100%);
+  font-family: "Manrope", "Helvetica Neue", Arial, sans-serif;
+  color: var(--ink);
+}
+#grain {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0 1px, transparent 1px 4px);
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+}
+#canvas {
+  position: absolute;
+  inset: 0;
+}
+#title {
+  position: absolute;
+  bottom: 20%;
+  left: 10%;
+  font-size: 34px;
+  letter-spacing: 0.01em;
+}
+#label {
+  position: absolute;
+  bottom: 16%;
+  left: 10%;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+@media (max-width: 720px) {
+  #title { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+<div id="grain"></div>
+<canvas id="canvas"></canvas>
+<div id="title">Aura Field</div>
+<div id="label">Interactive FV</div>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let w = 0, h = 0;
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+const pointer = { x: 0.5, y: 0.5 };
+window.addEventListener('pointermove', (e) => {
+  pointer.x = e.clientX / w;
+  pointer.y = e.clientY / h;
+});
+
+function gradient(x, y, r, colors) {
+  const g = ctx.createRadialGradient(x, y, r * 0.1, x, y, r);
+  colors.forEach(([stop, color]) => g.addColorStop(stop, color));
+  return g;
+}
+
+let t = 0;
+function render() {
+  t += 0.005;
+  ctx.clearRect(0, 0, w, h);
+
+  const cx = w * (0.45 + Math.sin(t * 0.7) * 0.02 + (pointer.x - 0.5) * 0.08);
+  const cy = h * (0.46 + Math.cos(t * 0.5) * 0.02 + (pointer.y - 0.5) * 0.08);
+
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = gradient(cx, cy, w * 0.42, [
+    [0, 'rgba(120, 180, 255, 0.55)'],
+    [0.55, 'rgba(255, 190, 150, 0.25)'],
+    [1, 'rgba(255, 255, 255, 0)']
+  ]);
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = gradient(cx + 140, cy - 80, w * 0.35, [
+    [0, 'rgba(140, 210, 255, 0.45)'],
+    [0.6, 'rgba(160, 220, 190, 0.2)'],
+    [1, 'rgba(255, 255, 255, 0)']
+  ]);
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.globalCompositeOperation = 'screen';
+  ctx.fillStyle = gradient(cx - 160, cy + 120, w * 0.33, [
+    [0, 'rgba(255, 190, 170, 0.35)'],
+    [0.6, 'rgba(255, 220, 200, 0.15)'],
+    [1, 'rgba(255, 255, 255, 0)']
+  ]);
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.strokeStyle = 'rgba(20, 24, 30, 0.12)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(cx, cy, w * 0.32, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(20, 24, 30, 0.9)';
+  ctx.beginPath();
+  ctx.arc(cx + (pointer.x - 0.5) * 80, cy + (pointer.y - 0.5) * 80, 9, 0, Math.PI * 2);
+  ctx.fill();
+
+  requestAnimationFrame(render);
+}
+render();
+</script>
+</body>
+</html>
