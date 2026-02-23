@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
+<title>C3_LP_vertical-ledger_v03</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Space+Grotesk:wght@300;400;500&display=swap');
+:root {
+  --bg: #0c0e12;
+  --ink: #f3efe8;
+  --muted: rgba(243,239,232,0.6);
+  --line: rgba(243,239,232,0.14);
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+}
+#page {
+  width: 100%;
+  height: 100%;
+  padding: 64px 52px;
+  display: grid;
+  grid-template-columns: 0.32fr 0.68fr;
+  gap: 36px;
+}
+#rail {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+}
+#rail h1 {
+  font-family: "DM Serif Display", serif;
+  font-size: 56px;
+  margin: 0;
+  line-height: 0.95;
+}
+#rail .meta {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+#rail .rule {
+  height: 1px;
+  background: var(--line);
+  width: 100%;
+}
+#ledger {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 20px;
+}
+#ledger .lead {
+  max-width: 420px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+#columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.card {
+  border: 1px solid var(--line);
+  padding: 16px;
+  min-height: 120px;
+  display: grid;
+  gap: 8px;
+}
+.card .tag {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.card .copy {
+  font-size: 13px;
+  line-height: 1.5;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+@media (max-width: 900px) {
+  #page { grid-template-columns: 1fr; padding: 48px 28px; }
+  #rail h1 { font-size: 44px; }
+  #columns { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="page">
+  <aside id="rail">
+    <div class="meta">LP Fragment</div>
+    <h1>Vertical Ledger</h1>
+    <div class="rule"></div>
+    <div class="meta">Mono Editorial</div>
+  </aside>
+  <section id="ledger">
+    <div class="lead">A vertical editorial layout that privileges rhythm and whitespace over density.</div>
+    <div id="columns">
+      <div class="card">
+        <div class="tag">Section A</div>
+        <div class="copy">Single statement, one idea only.</div>
+      </div>
+      <div class="card">
+        <div class="tag">Section B</div>
+        <div class="copy">Quiet proof, no numbers baked in.</div>
+      </div>
+      <div class="card">
+        <div class="tag">Section C</div>
+        <div class="copy">CTA area with strict alignment.</div>
+      </div>
+      <div class="card">
+        <div class="tag">Section D</div>
+        <div class="copy">Short list, no visual noise.</div>
+      </div>
+    </div>
+    <footer>
+      <div>RePrompt</div>
+      <div>2026</div>
+    </footer>
+  </section>
+</div>
+</body>
+</html>
