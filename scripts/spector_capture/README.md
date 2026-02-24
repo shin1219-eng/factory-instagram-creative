@@ -38,6 +38,8 @@ python3 unitproduce_from_capture.py --demo-image /abs/path/to/hero.png --slug de
 - `OUTPUT_ROOT=/abs/path` : 出力先
 - `SPECTOR_BUNDLE_URL=...` : Spector.js の取得元
 - `CHANNEL=chrome` : ローカルChromeで起動（GPU強め）
+- `BYPASS_CSP=1` : CSPを無視して注入（デフォルトON）
+- `DISABLE_WEB_SECURITY=1` : Webセキュリティ無効化（最終手段）
 
 ## 出力
 `05_LOGS/captures/YYYY-MM-DD/<slug>/`

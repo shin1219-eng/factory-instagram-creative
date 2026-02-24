@@ -14,6 +14,8 @@ const SPECTOR_PATH = process.env.SPECTOR_PATH || LOCAL_SPECTOR;
 const SPECTOR_URL = process.env.SPECTOR_BUNDLE_URL || "https://cdn.jsdelivr.net/npm/spectorjs@0.9.30/dist/spector.bundle.js";
 
 const HEADLESS = process.env.HEADLESS === "1";
+const BYPASS_CSP = process.env.BYPASS_CSP !== "0";
+const DISABLE_WEB_SECURITY = process.env.DISABLE_WEB_SECURITY === "1";
 const WAIT_MS = Number(process.env.WAIT_MS || 7000);
 const WAIT_CANVAS_MS = Number(process.env.WAIT_CANVAS_MS || 15000);
 const CAPTURE_TIMEOUT_MS = Number(process.env.CAPTURE_TIMEOUT_MS || 20000);
@@ -161,20 +163,26 @@ async function captureUrl(url) {
   ensureDir(videosDir);
   ensureDir(spectorDir);
 
+  const launchArgs = [
+    "--use-gl=desktop",
+    "--enable-webgl",
+    "--ignore-gpu-blocklist",
+    "--disable-features=IsolateOrigins,site-per-process",
+  ];
+  if (DISABLE_WEB_SECURITY) {
+    launchArgs.push("--disable-web-security");
+  }
+
   const browser = await chromium.launch({
     headless: HEADLESS,
     channel: CHANNEL || undefined,
-    args: [
-      "--use-gl=desktop",
-      "--enable-webgl",
-      "--ignore-gpu-blocklist",
-      "--disable-features=IsolateOrigins,site-per-process",
-    ],
+    args: launchArgs,
   });
 
   const context = await browser.newContext({
     viewport: { width: VIEWPORT[0], height: VIEWPORT[1] },
     recordVideo: { dir: videosDir },
+    bypassCSP: BYPASS_CSP,
   });
 
   const page = await context.newPage();
@@ -183,11 +191,14 @@ async function captureUrl(url) {
     slug,
     started_at: new Date().toISOString(),
     status: "started",
+    bypass_csp: BYPASS_CSP,
+    disable_web_security: DISABLE_WEB_SECURITY,
   };
 
   try {
     const spectorPath = await ensureSpectorBundle();
-    await page.addInitScript({ path: spectorPath });
+    const spectorSource = fs.readFileSync(spectorPath, "utf-8");
+    await context.addInitScript({ content: spectorSource });
 
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 120000 });
 
@@ -201,11 +212,31 @@ async function captureUrl(url) {
       // continue; some sites still render after interaction
     }
 
-    // Trigger interaction to surface motion
+    // Trigger interaction to surface motion / create canvas
     await page.mouse.move(200, 300);
     await page.waitForTimeout(1200);
+    await page.mouse.click(VIEWPORT[0] * 0.5, VIEWPORT[1] * 0.5);
+    await page.waitForTimeout(600);
+    await page.mouse.wheel(0, 800);
+    await page.waitForTimeout(600);
+    await page.mouse.wheel(0, -800);
+    await page.waitForTimeout(600);
     await page.mouse.move(700, 1200);
     await page.waitForTimeout(1200);
+
+    // Inject Spector again post-load (handles CSP edge cases)
+    try {
+      await page.addScriptTag({ content: spectorSource });
+    } catch (e) {
+      meta.spector_inject_error = String(e);
+    }
+    for (const frame of page.frames()) {
+      try {
+        await frame.addScriptTag({ content: spectorSource });
+      } catch (e) {
+        // ignore; frame may be cross-origin or blocked
+      }
+    }
 
     let captureResult = null;
     let capturedFrameUrl = null;
