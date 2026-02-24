@@ -22,6 +22,8 @@ const CAPTURE_TIMEOUT_MS = Number(process.env.CAPTURE_TIMEOUT_MS || 20000);
 const CAPTURE_COMMANDS = Number(process.env.CAPTURE_COMMANDS || 400);
 const QUICK_CAPTURE = process.env.QUICK_CAPTURE === "1";
 const FULL_CAPTURE = process.env.FULL_CAPTURE === "1";
+const USE_START_STOP = process.env.USE_START_STOP === "1";
+const START_STOP_MS = Number(process.env.START_STOP_MS || 4000);
 const VIEWPORT = (process.env.VIEWPORT || "1080x1920").split("x").map(Number);
 const MAX_URLS = process.env.MAX_URLS ? Number(process.env.MAX_URLS) : null;
 const CHANNEL = process.env.CHANNEL || ""; // e.g. chrome
@@ -78,8 +80,19 @@ async function ensureSpectorBundle() {
   return SPECTOR_PATH;
 }
 
-async function captureInFrame(frame, timeoutMs, waitCanvasMs, spectorSource, captureCommands, quickCapture, fullCapture) {
-  return frame.evaluate(async (timeoutMs, waitCanvasMs, spectorSource, captureCommands, quickCapture, fullCapture) => {
+async function captureInFrame(
+  frame,
+  timeoutMs,
+  waitCanvasMs,
+  spectorSource,
+  captureCommands,
+  quickCapture,
+  fullCapture,
+  useStartStop,
+  startStopMs
+) {
+  return frame.evaluate(
+    async (timeoutMs, waitCanvasMs, spectorSource, captureCommands, quickCapture, fullCapture, useStartStop, startStopMs) => {
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     let canvases = Array.from(document.querySelectorAll("canvas")).filter((c) => c.width && c.height);
     if (!canvases.length) {
@@ -134,10 +147,22 @@ async function captureInFrame(frame, timeoutMs, waitCanvasMs, spectorSource, cap
       spector.onCaptureComplete.add((cap) => setCapture(cap));
     }
 
-    if (captureCommands > 0) {
-      spector.captureCanvas(canvas, captureCommands, quickCapture, fullCapture);
-    } else {
-      spector.captureCanvas(canvas);
+    if (useStartStop) {
+      try {
+        spector.startCapture(canvas, quickCapture, fullCapture);
+        await sleep(startStopMs);
+        captureData = spector.stopCapture();
+      } catch (e) {
+        // ignore; will fallback to captureCanvas
+      }
+    }
+
+    if (!captureData) {
+      if (captureCommands > 0) {
+        spector.captureCanvas(canvas, captureCommands, quickCapture, fullCapture);
+      } else {
+        spector.captureCanvas(canvas);
+      }
     }
 
     const maxLoops = Math.ceil(timeoutMs / 250);
@@ -176,7 +201,16 @@ async function captureInFrame(frame, timeoutMs, waitCanvasMs, spectorSource, cap
       canvas: { width: canvas.width, height: canvas.height },
       capture_json: json,
     };
-  }, timeoutMs, waitCanvasMs, spectorSource, captureCommands, quickCapture, fullCapture);
+  },
+    timeoutMs,
+    waitCanvasMs,
+    spectorSource,
+    captureCommands,
+    quickCapture,
+    fullCapture,
+    useStartStop,
+    startStopMs
+  );
 }
 
 async function captureUrl(url) {
@@ -268,7 +302,17 @@ async function captureUrl(url) {
     let capturedFrameUrl = null;
     for (const frame of page.frames()) {
       try {
-        const result = await captureInFrame(frame, CAPTURE_TIMEOUT_MS, WAIT_CANVAS_MS, spectorSource, CAPTURE_COMMANDS, QUICK_CAPTURE, FULL_CAPTURE);
+        const result = await captureInFrame(
+          frame,
+          CAPTURE_TIMEOUT_MS,
+          WAIT_CANVAS_MS,
+          spectorSource,
+          CAPTURE_COMMANDS,
+          QUICK_CAPTURE,
+          FULL_CAPTURE,
+          USE_START_STOP,
+          START_STOP_MS
+        );
         if (result && result.ok) {
           captureResult = result;
           capturedFrameUrl = frame.url();

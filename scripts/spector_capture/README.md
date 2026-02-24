@@ -37,6 +37,8 @@ python3 unitproduce_from_capture.py --demo-image /abs/path/to/hero.png --slug de
 - `CAPTURE_COMMANDS=400` : command数でキャプチャ（0なら1フレーム）
 - `QUICK_CAPTURE=1` : 速度優先（軽量）
 - `FULL_CAPTURE=1` : 詳細優先（重い）
+- `USE_START_STOP=1` : startCapture/stopCapture で強制取得
+- `START_STOP_MS=4000` : start→stop の待機時間
 - `MAX_URLS=5` : 先頭N件だけ
 - `OUTPUT_ROOT=/abs/path` : 出力先
 - `SPECTOR_BUNDLE_URL=...` : Spector.js の取得元
