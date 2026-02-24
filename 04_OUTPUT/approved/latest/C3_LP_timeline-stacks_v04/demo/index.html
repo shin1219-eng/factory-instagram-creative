@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
+<meta name="palette-id" content="acid-lime" />
+<meta name="layout-id" content="timeline-stacks" />
+<title>C3_LP_timeline-stacks_v04</title>
+<style>
+:root {
+  --bg-1: #0a0f0b;
+  --bg-2: #050605;
+  --lime: #c7ff3c;
+  --lime-soft: rgba(199, 255, 60, 0.15);
+  --ink: rgba(240, 255, 230, 0.8);
+}
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #0a170c 0%, var(--bg-1) 45%, var(--bg-2) 100%);
+  color: var(--ink);
+  font-family: "Times New Roman", serif;
+}
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+}
+main {
+  position: relative;
+  z-index: 1;
+}
+section {
+  min-height: 100vh;
+  padding: 12vh 10vw;
+  display: grid;
+  gap: 3vh;
+  align-content: center;
+}
+.hero {
+  grid-template-columns: minmax(0, 1fr);
+}
+.grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2vw;
+}
+.card {
+  border: 1px solid rgba(199, 255, 60, 0.4);
+  background: rgba(5, 12, 6, 0.65);
+  box-shadow: 0 0 30px rgba(199, 255, 60, 0.1);
+  border-radius: 18px;
+  height: 180px;
+}
+.timeline {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 4vw;
+}
+.rail {
+  position: relative;
+}
+.rail::before {
+  content: "";
+  position: absolute;
+  left: 40px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(199, 255, 60, 0.8), rgba(199, 255, 60, 0.1));
+}
+.node {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--lime);
+  margin: 40px 0;
+  box-shadow: 0 0 16px rgba(199, 255, 60, 0.6);
+}
+.block {
+  height: 120px;
+  margin: 16px 0;
+  border: 1px solid rgba(199, 255, 60, 0.25);
+  background: rgba(10, 24, 12, 0.6);
+  border-radius: 14px;
+}
+.label {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  color: rgba(199, 255, 60, 0.7);
+}
+#grain {
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 3px);
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 2;
+}
+</style>
+</head>
+<body data-parallax="true" data-material="lime">
+<canvas id="scene"></canvas>
+<main>
+  <section class="hero">
+    <div class="label">Sequence</div>
+    <div style="font-size:48px; max-width:540px;">Stacks of signal moving through a vertical cadence.</div>
+  </section>
+  <section class="grid">
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+  </section>
+  <section class="timeline">
+    <div class="rail">
+      <div class="node"></div>
+      <div class="node"></div>
+      <div class="node"></div>
+    </div>
+    <div>
+      <div class="block"></div>
+      <div class="block"></div>
+      <div class="block"></div>
+    </div>
+  </section>
+</main>
+<div id="grain"></div>
+<script src="../../../../../../../vendor/three/three.min.js"></script>
+<script>
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x050605, 6, 18);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0.0, 0.6, 6.2);
+
+scene.add(new THREE.AmbientLight(0x7ea84a, 0.7));
+const key = new THREE.PointLight(0xc7ff3c, 2.2, 16);
+key.position.set(2.6, 3.2, 4.4);
+scene.add(key);
+
+const stacks = new THREE.Group();
+const boxGeo = new THREE.BoxGeometry(1.2, 0.2, 0.6);
+for (let i = 0; i < 7; i++) {
+  const mat = new THREE.MeshStandardMaterial({
+    color: i % 2 === 0 ? 0xc7ff3c : 0x2a3d1d,
+    metalness: 0.3,
+    roughness: 0.45,
+    transparent: true,
+    opacity: 0.85
+  });
+  const box = new THREE.Mesh(boxGeo, mat);
+  box.position.set(-0.6 + (i % 3) * 0.7, -0.6 + i * 0.25, -i * 0.2);
+  box.rotation.y = i * 0.2;
+  stacks.add(box);
+}
+scene.add(stacks);
+
+const plateGeo = new THREE.PlaneGeometry(6, 6, 1, 1);
+const plate = new THREE.Mesh(plateGeo, new THREE.MeshStandardMaterial({ color: 0x0e1c0b, metalness: 0.2, roughness: 0.9 }));
+plate.rotation.x = -Math.PI / 2.4;
+plate.position.y = -1.2;
+scene.add(plate);
+
+const target = { x: 0, y: 0 };
+window.addEventListener('pointermove', (e) => {
+  target.x = (e.clientX / window.innerWidth - 0.5) * 0.3;
+  target.y = (e.clientY / window.innerHeight - 0.5) * 0.2;
+});
+
+let t = 0;
+function animate() {
+  t += 0.01;
+  stacks.rotation.y = Math.sin(t * 0.3) * 0.3;
+  stacks.position.y = Math.sin(t * 0.4) * 0.08;
+
+  camera.position.x += (target.x - camera.position.x) * 0.05;
+  camera.position.y += (0.6 + target.y - camera.position.y) * 0.04;
+  camera.lookAt(0, 0, 0);
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

@@ -1,19 +1,6 @@
 # Preview Index
 
-- 04_OUTPUT/approved/latest/C1_KV_asym-altar_v03/demo/preview.png
-- 04_OUTPUT/approved/latest/C1_KV_glass-shear_v01/demo/preview.png
-- 04_OUTPUT/approved/latest/C1_KV_ion-core_v02/demo/preview.png
-- 04_OUTPUT/approved/latest/C1_KV_liquid-chrome_v02/demo/preview.png
-- 04_OUTPUT/approved/latest/C1_KV_prism-bloom_v02/demo/preview.png
-- 04_OUTPUT/approved/latest/C2_FV_ion-core_v02/demo/preview.png
-- 04_OUTPUT/approved/latest/C2_FV_kinetic-portal_v01/demo/preview.png
-- 04_OUTPUT/approved/latest/C2_FV_liquid-chrome_v02/demo/preview.png
-- 04_OUTPUT/approved/latest/C2_FV_prism-bloom_v02/demo/preview.png
-- 04_OUTPUT/approved/latest/C2_FV_split-orbit_v03/demo/preview.png
-- 04_OUTPUT/approved/latest/C3_LP_ion-core_v02/demo/preview.png
-- 04_OUTPUT/approved/latest/C3_LP_prism-bloom_v02/demo/preview.png
-- 04_OUTPUT/approved/latest/C3_LP_studio-grid_v01/demo/preview.png
-- 04_OUTPUT/approved/latest/C3_LP_vertical-ledger_v03/demo/preview.png
-- 04_OUTPUT/approved/latest/C4_HP_glass-shear_v01/demo/preview.png
-- 04_OUTPUT/approved/latest/C4_HP_mosaic-steps_v03/demo/preview.png
-- 04_OUTPUT/approved/latest/C4_HP_nova-veil_v02/demo/preview.png
+- 04_OUTPUT/approved/latest/C1_KV_diagonal-altar_v04/demo/preview.png
+- 04_OUTPUT/approved/latest/C2_FV_arc-sweep_v04/demo/preview.png
+- 04_OUTPUT/approved/latest/C3_LP_timeline-stacks_v04/demo/preview.png
+- 04_OUTPUT/approved/latest/C4_HP_banded-panels_v04/demo/preview.png
