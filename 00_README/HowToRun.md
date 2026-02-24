@@ -1,5 +1,11 @@
 # How to Run (運用手順)
 
+## 0) Render Capture（Spector）
+- 目的：URL を実描画し、WebGLの実仕様（draw call / shader / uniform）を取得
+- 実行：`node scripts/spector_capture/capture_urls.mjs`
+- 出力：`05_LOGS/captures/YYYY-MM-DD/<slug>/`
+  - `spector/capture.json` / `shots/hero.png` / `videos/*.webm` / `meta.json`
+
 ## 1) TrendScan を回す
 - 入力：02_BRIEFS/TrendScan-Brief.md
 - 出力：05_LOGS/runs/YYYY-MM-DD/run_001.md

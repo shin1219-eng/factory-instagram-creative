@@ -10,3 +10,9 @@ node_modules/
 # Run logs (tracked only via .gitkeep)
 05_LOGS/runs/**
 !05_LOGS/runs/.gitkeep
+
+# Capture artifacts (Spector / video / screenshots)
+05_LOGS/captures/**
+
+# Spector bundle (downloaded)
+scripts/spector_capture/vendor/spector.bundle.js
