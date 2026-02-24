@@ -16,6 +16,16 @@ npx playwright install --with-deps
 node capture_urls.mjs
 ```
 
+## UnitProduceへ直結（Spector → C1〜C4）
+```bash
+python3 unitproduce_from_capture.py --capture /abs/path/to/05_LOGS/captures/YYYY-MM-DD/<slug>
+```
+
+### デモ（キャプチャ無し）
+```bash
+python3 unitproduce_from_capture.py --demo-image /abs/path/to/hero.png --slug demo
+```
+
 ### オプション
 - `HEADLESS=1` : ヘッドレス
 - `VIEWPORT=1080x1920` : 画面サイズ

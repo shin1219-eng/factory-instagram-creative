@@ -5,6 +5,7 @@
 - 実行：`node scripts/spector_capture/capture_urls.mjs`
 - 出力：`05_LOGS/captures/YYYY-MM-DD/<slug>/`
   - `spector/capture.json` / `shots/hero.png` / `videos/*.webm` / `meta.json`
+ - C1〜C4へ直結：`python3 scripts/spector_capture/unitproduce_from_capture.py --capture 05_LOGS/captures/YYYY-MM-DD/<slug>`
 
 ## 1) TrendScan を回す
 - 入力：02_BRIEFS/TrendScan-Brief.md
