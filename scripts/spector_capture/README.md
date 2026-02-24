@@ -34,6 +34,9 @@ python3 unitproduce_from_capture.py --demo-image /abs/path/to/hero.png --slug de
 - `WAIT_MS=7000` : 初期待機
 - `WAIT_CANVAS_MS=15000` : canvas待ち
 - `CAPTURE_TIMEOUT_MS=15000` : Spector capture 待ち
+- `CAPTURE_COMMANDS=400` : command数でキャプチャ（0なら1フレーム）
+- `QUICK_CAPTURE=1` : 速度優先（軽量）
+- `FULL_CAPTURE=1` : 詳細優先（重い）
 - `MAX_URLS=5` : 先頭N件だけ
 - `OUTPUT_ROOT=/abs/path` : 出力先
 - `SPECTOR_BUNDLE_URL=...` : Spector.js の取得元
