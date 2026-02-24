@@ -13,6 +13,8 @@ npx playwright install --with-deps
 
 ## 実行
 ```bash
+npm install
+npx playwright install --with-deps
 node capture_urls.mjs
 ```
 
@@ -30,10 +32,12 @@ python3 unitproduce_from_capture.py --demo-image /abs/path/to/hero.png --slug de
 - `HEADLESS=1` : ヘッドレス
 - `VIEWPORT=1080x1920` : 画面サイズ
 - `WAIT_MS=7000` : 初期待機
+- `WAIT_CANVAS_MS=15000` : canvas待ち
 - `CAPTURE_TIMEOUT_MS=15000` : Spector capture 待ち
 - `MAX_URLS=5` : 先頭N件だけ
 - `OUTPUT_ROOT=/abs/path` : 出力先
 - `SPECTOR_BUNDLE_URL=...` : Spector.js の取得元
+- `CHANNEL=chrome` : ローカルChromeで起動（GPU強め）
 
 ## 出力
 `05_LOGS/captures/YYYY-MM-DD/<slug>/`
