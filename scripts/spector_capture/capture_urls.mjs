@@ -16,6 +16,8 @@ const SPECTOR_URL = process.env.SPECTOR_BUNDLE_URL || "https://cdn.jsdelivr.net/
 const HEADLESS = process.env.HEADLESS === "1";
 const BYPASS_CSP = process.env.BYPASS_CSP !== "0";
 const DISABLE_WEB_SECURITY = process.env.DISABLE_WEB_SECURITY === "1";
+const ANGLE_BACKEND = process.env.ANGLE_BACKEND || "metal";
+const FORCE_WEBGPU_OFF = process.env.FORCE_WEBGPU_OFF === "1";
 const WAIT_MS = Number(process.env.WAIT_MS || 7000);
 const WAIT_CANVAS_MS = Number(process.env.WAIT_CANVAS_MS || 15000);
 const CAPTURE_TIMEOUT_MS = Number(process.env.CAPTURE_TIMEOUT_MS || 20000);
@@ -92,124 +94,183 @@ async function captureInFrame(
   startStopMs
 ) {
   return frame.evaluate(
-    async (timeoutMs, waitCanvasMs, spectorSource, captureCommands, quickCapture, fullCapture, useStartStop, startStopMs) => {
-    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-    let canvases = Array.from(document.querySelectorAll("canvas")).filter((c) => c.width && c.height);
-    if (!canvases.length) {
-      const maxLoops = Math.ceil(waitCanvasMs / 300);
-      for (let i = 0; i < maxLoops; i++) {
-        await sleep(300);
-        canvases = Array.from(document.querySelectorAll("canvas")).filter((c) => c.width && c.height);
-        if (canvases.length) break;
-      }
-    }
-    if (!canvases.length) {
-      return { ok: false, error: "no-canvas" };
-    }
-    const canvas = canvases.sort((a, b) => b.width * b.height - a.width * a.height)[0];
-    const gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
-    let vendor = null;
-    let renderer = null;
-    if (gl) {
-      const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
-      if (debugInfo) {
-        vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-        renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-      }
-    }
-
-    if (!window.SPECTOR && spectorSource) {
+    async (params) => {
       try {
-        const script = document.createElement("script");
-        script.text = spectorSource;
-        (document.head || document.documentElement).appendChild(script);
-        await sleep(300);
-      } catch (e) {
-        // ignore
-      }
-    }
-
-    if (!window.SPECTOR) {
-      return { ok: false, error: "spector-not-loaded", vendor, renderer, canvas: { width: canvas.width, height: canvas.height } };
-    }
-
-    const spector = new window.SPECTOR.Spector();
-    let captureData = null;
-
-    const setCapture = (cap) => {
-      if (!captureData) captureData = cap;
-    };
-
-    if (spector.onCapture && spector.onCapture.add) {
-      spector.onCapture.add((cap) => setCapture(cap));
-    }
-    if (spector.onCaptureComplete && spector.onCaptureComplete.add) {
-      spector.onCaptureComplete.add((cap) => setCapture(cap));
-    }
-
-    if (useStartStop) {
-      try {
-        spector.startCapture(canvas, quickCapture, fullCapture);
-        await sleep(startStopMs);
-        captureData = spector.stopCapture();
-      } catch (e) {
-        // ignore; will fallback to captureCanvas
-      }
-    }
-
-    if (!captureData) {
-      if (captureCommands > 0) {
-        spector.captureCanvas(canvas, captureCommands, quickCapture, fullCapture);
-      } else {
-        spector.captureCanvas(canvas);
-      }
-    }
-
-    const maxLoops = Math.ceil(timeoutMs / 250);
-    for (let i = 0; i < maxLoops; i++) {
-      if (captureData) break;
-      await sleep(250);
-    }
-
-    if (!captureData) {
-      return { ok: false, error: "capture-timeout", vendor, renderer, canvas: { width: canvas.width, height: canvas.height } };
-    }
-
-    const seen = new WeakSet();
-    const safe = (value) => {
-      try {
-        return JSON.stringify(value, (key, val) => {
-          if (typeof val === "function") return undefined;
-          if (typeof val === "object" && val !== null) {
-            if (seen.has(val)) return undefined;
-            seen.add(val);
+        const {
+          timeoutMs,
+          waitCanvasMs,
+          spectorSource,
+          captureCommands,
+          quickCapture,
+          fullCapture,
+          useStartStop,
+          startStopMs,
+        } = params;
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+        let canvases = Array.from(document.querySelectorAll("canvas")).filter((c) => c.width && c.height);
+        if (!canvases.length) {
+          const maxLoops = Math.ceil(waitCanvasMs / 300);
+          for (let i = 0; i < maxLoops; i++) {
+            await sleep(300);
+            canvases = Array.from(document.querySelectorAll("canvas")).filter((c) => c.width && c.height);
+            if (canvases.length) break;
           }
-          if (val instanceof ArrayBuffer) return Array.from(new Uint8Array(val));
-          return val;
-        });
-      } catch (e) {
-        return null;
-      }
-    };
+        }
+        if (!canvases.length) {
+          return { ok: false, error: "no-canvas" };
+        }
 
-    const json = safe(captureData);
-    return {
-      ok: !!json,
-      error: json ? null : "capture-serialize-failed",
-      vendor,
-      renderer,
-      canvas: { width: canvas.width, height: canvas.height },
-      capture_json: json,
-    };
-  },
-    timeoutMs,
-    waitCanvasMs,
-    spectorSource,
-    captureCommands,
-    quickCapture,
-    fullCapture,
-    useStartStop,
-    startStopMs
+        const canvasInfos = canvases.map((c, i) => {
+          let gl2 = null;
+          let gl = null;
+          let webgpu = null;
+          try { gl2 = c.getContext("webgl2"); } catch (e) {}
+          try { gl = c.getContext("webgl"); } catch (e) {}
+          try { webgpu = c.getContext("webgpu"); } catch (e) {}
+          return {
+            i,
+            width: c.width,
+            height: c.height,
+            hasWebGL2: !!gl2,
+            hasWebGL: !!gl,
+            hasWebGPU: !!webgpu,
+          };
+        });
+
+        const webglCandidates = canvasInfos
+          .filter((x) => x.hasWebGL2 || x.hasWebGL)
+          .sort((a, b) => b.width * b.height - a.width * a.height);
+        if (!webglCandidates.length) {
+          return {
+            ok: false,
+            error: "no-webgl-context",
+            canvas_infos: canvasInfos,
+          };
+        }
+
+        const picked = webglCandidates[0];
+        const canvas = canvases[picked.i];
+        const gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
+        let vendor = null;
+        let renderer = null;
+        if (gl) {
+          const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+          if (debugInfo) {
+            vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+            renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+          }
+        }
+
+        if (!window.SPECTOR && spectorSource) {
+          try {
+            (0, eval)(spectorSource);
+            await sleep(150);
+          } catch (e) {
+            // keep going and report below
+          }
+        }
+
+        if (!window.SPECTOR) {
+          return {
+            ok: false,
+            error: "spector-not-loaded",
+            vendor,
+            renderer,
+            canvas: { width: canvas.width, height: canvas.height },
+            canvas_infos: canvasInfos,
+          };
+        }
+
+        const spector = new window.SPECTOR.Spector();
+        let captureData = null;
+
+        const setCapture = (cap) => {
+          if (!captureData) captureData = cap;
+        };
+
+        if (spector.onCapture && spector.onCapture.add) {
+          spector.onCapture.add((cap) => setCapture(cap));
+        }
+        if (spector.onCaptureComplete && spector.onCaptureComplete.add) {
+          spector.onCaptureComplete.add((cap) => setCapture(cap));
+        }
+
+        if (useStartStop) {
+          try {
+            spector.startCapture(canvas, quickCapture, fullCapture);
+            await sleep(startStopMs);
+            captureData = spector.stopCapture();
+          } catch (e) {
+            // ignore; will fallback to captureCanvas
+          }
+        }
+
+        if (!captureData) {
+          if (captureCommands > 0) {
+            spector.captureCanvas(canvas, captureCommands, quickCapture, fullCapture);
+          } else {
+            spector.captureCanvas(canvas);
+          }
+        }
+
+        const maxLoops = Math.ceil(timeoutMs / 250);
+        for (let i = 0; i < maxLoops; i++) {
+          if (captureData) break;
+          await sleep(250);
+        }
+
+        if (!captureData) {
+          return {
+            ok: false,
+            error: "capture-timeout",
+            vendor,
+            renderer,
+            canvas: { width: canvas.width, height: canvas.height },
+            canvas_infos: canvasInfos,
+          };
+        }
+
+        const seen = new WeakSet();
+        const safe = (value) => {
+          try {
+            return JSON.stringify(value, (key, val) => {
+              if (typeof val === "function") return undefined;
+              if (typeof val === "object" && val !== null) {
+                if (seen.has(val)) return undefined;
+                seen.add(val);
+              }
+              if (val instanceof ArrayBuffer) return Array.from(new Uint8Array(val));
+              return val;
+            });
+          } catch (e) {
+            return null;
+          }
+        };
+
+        const json = safe(captureData);
+        return {
+          ok: !!json,
+          error: json ? null : "capture-serialize-failed",
+          vendor,
+          renderer,
+          canvas: { width: canvas.width, height: canvas.height },
+          canvas_infos: canvasInfos,
+          capture_json: json,
+        };
+      } catch (e) {
+        return { ok: false, error: "evaluate-error", detail: String(e) };
+      }
+    },
+    {
+      timeoutMs,
+      waitCanvasMs,
+      spectorSource,
+      captureCommands,
+      quickCapture,
+      fullCapture,
+      useStartStop,
+      startStopMs,
+    }
   );
 }
 
@@ -224,13 +285,16 @@ async function captureUrl(url) {
   ensureDir(spectorDir);
 
   const launchArgs = [
-    "--use-gl=desktop",
+    `--use-angle=${ANGLE_BACKEND}`,
     "--enable-webgl",
     "--ignore-gpu-blocklist",
     "--disable-features=IsolateOrigins,site-per-process",
   ];
   if (DISABLE_WEB_SECURITY) {
     launchArgs.push("--disable-web-security");
+  }
+  if (FORCE_WEBGPU_OFF) {
+    launchArgs.push("--disable-unsafe-webgpu");
   }
 
   const browser = await chromium.launch({
@@ -244,6 +308,37 @@ async function captureUrl(url) {
     recordVideo: { dir: videosDir },
     bypassCSP: BYPASS_CSP,
   });
+  await context.addInitScript(() => {
+    window.__ctxProbe = [];
+    const hGet = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function(type, ...args) {
+      const out = hGet.call(this, type, ...args);
+      try {
+        window.__ctxProbe.push({
+          target: "html",
+          type: String(type),
+          ok: !!out,
+          ts: Date.now(),
+        });
+      } catch (e) {}
+      return out;
+    };
+    if (typeof OffscreenCanvas !== "undefined" && OffscreenCanvas.prototype && OffscreenCanvas.prototype.getContext) {
+      const oGet = OffscreenCanvas.prototype.getContext;
+      OffscreenCanvas.prototype.getContext = function(type, ...args) {
+        const out = oGet.call(this, type, ...args);
+        try {
+          window.__ctxProbe.push({
+            target: "offscreen",
+            type: String(type),
+            ok: !!out,
+            ts: Date.now(),
+          });
+        } catch (e) {}
+        return out;
+      };
+    }
+  });
 
   const page = await context.newPage();
   const meta = {
@@ -253,6 +348,8 @@ async function captureUrl(url) {
     status: "started",
     bypass_csp: BYPASS_CSP,
     disable_web_security: DISABLE_WEB_SECURITY,
+    angle_backend: ANGLE_BACKEND,
+    force_webgpu_off: FORCE_WEBGPU_OFF,
   };
 
   try {
@@ -300,6 +397,7 @@ async function captureUrl(url) {
 
     let captureResult = null;
     let capturedFrameUrl = null;
+    const frameResults = [];
     for (const frame of page.frames()) {
       try {
         const result = await captureInFrame(
@@ -313,6 +411,13 @@ async function captureUrl(url) {
           USE_START_STOP,
           START_STOP_MS
         );
+        frameResults.push({
+          frame: frame.url(),
+          ok: !!result?.ok,
+          error: result?.error || null,
+          detail: result?.detail || null,
+          canvas_infos: result?.canvas_infos || null,
+        });
         if (result && result.ok) {
           captureResult = result;
           capturedFrameUrl = frame.url();
@@ -320,7 +425,12 @@ async function captureUrl(url) {
         }
         if (!captureResult) captureResult = result; // keep first failure reason
       } catch (e) {
-        // ignore and try next frame
+        frameResults.push({
+          frame: frame.url(),
+          ok: false,
+          error: "frame-evaluate-exception",
+          detail: String(e),
+        });
       }
     }
 
@@ -338,7 +448,9 @@ async function captureUrl(url) {
     meta.vendor = captureResult.vendor || null;
     meta.renderer = captureResult.renderer || null;
     meta.canvas = captureResult.canvas || null;
+    meta.canvas_infos = captureResult.canvas_infos || null;
     meta.frame_url = capturedFrameUrl || null;
+    meta.frame_results = frameResults;
 
     if (captureResult.capture_json) {
       fs.writeFileSync(path.join(spectorDir, "capture.json"), captureResult.capture_json);
@@ -356,6 +468,11 @@ async function captureUrl(url) {
     meta.error = String(err);
   } finally {
     meta.finished_at = new Date().toISOString();
+    try {
+      meta.ctx_probe = await page.evaluate(() => (window.__ctxProbe || []).slice(-100));
+    } catch (e) {
+      meta.ctx_probe_error = String(e);
+    }
     fs.writeFileSync(path.join(outDir, "meta.json"), JSON.stringify(meta, null, 2));
     await context.close();
     await browser.close();

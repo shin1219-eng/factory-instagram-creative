@@ -45,6 +45,16 @@ python3 unitproduce_from_capture.py --demo-image /abs/path/to/hero.png --slug de
 - `CHANNEL=chrome` : ローカルChromeで起動（GPU強め）
 - `BYPASS_CSP=1` : CSPを無視して注入（デフォルトON）
 - `DISABLE_WEB_SECURITY=1` : Webセキュリティ無効化（最終手段）
+- `ANGLE_BACKEND=metal` : GPUバックエンド（推奨: metal）
+- `FORCE_WEBGPU_OFF=1` : WebGPUを無効化（WebGL fallbackを狙う）
+
+## 失敗時の見方
+- `meta.json` の `ctx_probe`: `getContext` 呼び出しの実績
+- `meta.json` の `frame_results`: frameごとの失敗理由
+- 典型パターン:
+  - `no-webgl-context`: そのページでWebGLが作れていない（WebGPUのみ/2Dのみ）
+  - `spector-not-loaded`: CSPや注入失敗
+  - `capture-timeout`: WebGLはあるがSpectorイベント未発火
 
 ## 出力
 `05_LOGS/captures/YYYY-MM-DD/<slug>/`
