@@ -5,7 +5,20 @@
 - 実行：`node scripts/spector_capture/capture_urls.mjs`
 - 出力：`05_LOGS/captures/YYYY-MM-DD/<slug>/`
   - `spector/capture.json` / `shots/hero.png` / `videos/*.webm` / `meta.json`
- - C1〜C4へ直結：`python3 scripts/spector_capture/unitproduce_from_capture.py --capture 05_LOGS/captures/YYYY-MM-DD/<slug>`
+- C1〜C4へ直結：`python3 scripts/spector_capture/unitproduce_from_capture.py --capture 05_LOGS/captures/YYYY-MM-DD/<slug>`
+- 3キャンペーン連結（12本）：`python3 scripts/spector_capture/unitproduce_from_capture.py --capture 05_LOGS/captures/YYYY-MM-DD/<slug> --campaigns 3 --version v04 --story-rotation 1`
+- family拡張: `fluid/organic/spectral`, `brutal/grid/industrial`, `cinematic/editorial/luxe`
+
+## 0.5) 2段パイプライン（推奨）
+- 収集・整理:
+  - `python3 scripts/spector_capture/build_creative_input.py --captures-date YYYY-MM-DD --campaigns 3 --story-rotation 1 --target-date YYYY-MM-DD --axes-config 01_RULES/style/ResearchAxes.json`
+  - 出力: `05_LOGS/research/YYYY-MM-DD/<batch_id>/creative_input.json`
+  - 判定軸: `technical` / `brand_story` / `market`
+- クリエイティブ生成:
+  - `python3 scripts/spector_capture/generate_from_creative_input.py --creative-input /abs/path/to/creative_input.json --date YYYY-MM-DD --version v05 --max-regen 2`
+  - 出力: `04_OUTPUT/production/YYYY-MM/YYYY-MM-DD/inbox/` に12本（3 campaign x C1-C4）
+  - 追加出力: `05_LOGS/research/YYYY-MM-DD/<batch_id>/AD_REVIEW_vXX.md`
+  - 重複時: campaign signature を見て `story_rotation/family_shift` を自動再生成（max 2）
 
 ## 1) TrendScan を回す
 - 入力：02_BRIEFS/TrendScan-Brief.md

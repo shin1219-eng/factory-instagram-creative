@@ -1,0 +1,33 @@
+{
+  "version": "research-axes.v1",
+  "weights": {
+    "technical": 0.40,
+    "brand_story": 0.35,
+    "market": 0.25
+  },
+  "minimum_scores": {
+    "technical": 30.0,
+    "brand_story": 45.0,
+    "market": 40.0
+  },
+  "brand_story": {
+    "vertical_tone_fit": {
+      "apparel": ["balanced", "noir", "mist"],
+      "mobility": ["noir", "balanced", "mist"],
+      "gaming": ["noir", "neon", "balanced"],
+      "spatial": ["balanced", "mist", "neon"],
+      "luxury": ["noir", "mist", "balanced"],
+      "editorial": ["mist", "balanced", "noir"]
+    }
+  },
+  "market": {
+    "vertical_trend_tags": {
+      "apparel": ["drop", "silhouette", "runway", "material"],
+      "mobility": ["quiet", "performance", "cockpit", "control"],
+      "gaming": ["artifact", "mint", "lore", "utility"],
+      "spatial": ["portal", "depth", "immersive", "field"],
+      "luxury": ["craft", "scarcity", "maison", "collector"],
+      "editorial": ["thesis", "campaign", "concept", "proof"]
+    }
+  }
+}
